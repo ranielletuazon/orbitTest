@@ -1,0 +1,96 @@
+.header {
+    display: flex;
+    justify-content: space-between;  
+    align-items: center;             
+    padding: 1rem 2rem;              
+}
+      
+.header-logo img {
+    height: 2.5rem;                    
+}
+
+.card {
+    background-color: #4d4c4c;
+    border-radius: 10px;
+    width: 540px;
+    max-width: 580px;;
+    padding: 3rem;
+    color: white;
+}
+
+.center-container {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-header{
+    text-align: center;
+    border-bottom: none;
+    font-weight: 100;
+    padding: 0;
+    margin-bottom: -20px;
+}
+
+.card-header h4 {
+    font-family: "Poppins", sans-serif;
+    color: #ffffff;
+    font-size: 25px;
+    margin: 0;
+}
+
+.card-header h5 {
+    font-family: "Poppins", sans-serif;
+    color: #d9d9d9;
+    font-size: 12px;
+}
+
+.card-body, .card-title, p{
+    color: #d9d9d9;
+    font-size: 10.1px;
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+    margin-top: 15px;
+}
+
+.card-title-a{
+    color: #2cc6ff;
+    font-size: 10.1px;
+    font-family: "Poppins", sans-serif;
+    margin: 0;
+}
+
+.card-title, .card-text, .btn {
+    color: white;
+}
+
+
+.btn {
+    background-color: #2cc6ff;
+    border: none;
+    padding: 9px;
+    margin-top: 1rem;  
+    width: 100%;           /* Set to 100% to use the card's width */
+    border-radius: 5px;   /* Rounded corners */
+    font-size: 15px;      /* Set the font size */
+    color: white;    
+}
+
+.input-box {
+    width: 100%;           /* Set to 100% to use the card's width */
+    height: 40px;         /* Set a fixed height */
+    padding: 10px;        /* Add some padding for comfort */
+    border-radius: 5px;   /* Rounded corners */
+    border: 1px solid #313131; /* Add a border with a matching color */
+    font-size: 15px;      /* Set the font size */
+    background-color: #313131; /* Background color for the input */
+    color: white;        
+}
+
+.input-box:focus {
+    outline: none;       
+    border-color: #2cc6ff; /* Change border color on focus */
+    box-shadow: 0 0 5px #2cc6ff; /* Add a shadow effect on focus */
+}
+
