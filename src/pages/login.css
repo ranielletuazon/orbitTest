@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;  
     align-items: center;             
-    padding: 1rem 2rem;              
+    padding: 1rem 2rem;        
 }
       
 .header-logo img {
@@ -23,6 +23,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    animation: fadeDown .5s ease-in-out;
+}
+
+@keyframes fadeDown {
+    0% {
+        opacity: 0;              
+        transform: translateY(-50px); 
+    }
+    100% {
+        opacity: 1;              
+        transform: translateY(0);     
+    }
 }
 
 .card-header{
@@ -52,6 +64,7 @@
     font-family: "Poppins", sans-serif;
     margin: 0;
     margin-top: 15px;
+    margin-bottom: 5px;
 }
 
 .card-title-a{
@@ -70,6 +83,7 @@
     background-color: #2cc6ff;
     border: none;
     padding: 9px;
+    margin:0;
     margin-top: 1rem;  
     width: 100%;           /* Set to 100% to use the card's width */
     border-radius: 5px;   /* Rounded corners */
@@ -88,9 +102,34 @@
     color: white;        
 }
 
+.input-box-birth {
+    width: 100%;           /* Set to 100% to use the card's width */
+    height: 40px;         /* Set a fixed height */
+    padding: 10px;        /* Add some padding for comfort */
+    border-radius: 5px;   /* Rounded corners */
+    border: 1px solid #313131; /* Add a border with a matching color */
+    font-size: 15px;      /* Set the font size */
+    background-color: #313131; /* Background color for the input */
+    color: white;        
+}
+
+/* Hides the default date input placeholder */
+.input-box-birth::placeholder {
+    color: transparent; /* Hides the placeholder */
+}
+
+/* Hides the calendar indicator */
+.input-box-birth::-webkit-inner-spin-button, 
+.input-box-birth::-webkit-calendar-picker-indicator {
+    display: none; /* Hides the spinner and calendar indicator */
+}
+
+
+
+
 .input-box:focus {
     outline: none;       
-    border-color: #2cc6ff; /* Change border color on focus */
-    box-shadow: 0 0 5px #2cc6ff; /* Add a shadow effect on focus */
+    border-color: #2cc6ff; 
+    box-shadow: 0 0 5px #2cc6ff; 
 }
 
