@@ -1,8 +1,10 @@
 import './home.css';
-import Header from './Header.jsx';  
-import { useNavigate } from 'react-router-dom'; 
+import Header from './Header.jsx'; 
+import React, { useState, useEffect } from 'react';  // Import React, useState, and useEffect
+import './login.css';
 
 function Home() {
+
   return (
     <div>
         <Header />

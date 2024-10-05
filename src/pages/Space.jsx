@@ -1,31 +1,26 @@
 import React from 'react';
 import { signOut } from 'firebase/auth';
-import { auth } from '../firebase/firebase.jsx'; // Adjust the path based on your structure
+import { auth } from '../firebase/firebase.jsx'; 
 import { useNavigate } from 'react-router-dom';
 
-function Space() {
-    const navigate = useNavigate();
-    const user = auth.currentUser; // Get the current user
+function Space({ user }) { // Accept user prop
+    const navigate = useNavigate(); // Initialize useNavigate hook
 
-    const handleSignOut = async () => {
-        try {
-            await signOut(auth);
-            navigate('/login'); // Redirect to the login page after signing out
-        } catch (error) {
-            console.error("Error signing out: ", error);
-        }
-    };
+    console.log('Space component user:', user); // Log user object
+
+    const handleSignOut = () => {
+        signOut(auth)
+            .then(() => {
+                console.log("Sign Out");
+                navigate('/login'); // Redirect to login after signing out
+            })
+            .catch((error) => console.log(error));
+    }
 
     return (
         <div>
-            {user ? ( // Check if the user is logged in
-                <>
-                    <h1>Hello, {user.email}!</h1> {/* Display the user's email */}
-                    <button onClick={handleSignOut} className="btn btn-danger">Sign Out</button>
-                </>
-            ) : (
-                <h1>No user is signed in.</h1> // Message when no user is signed in
-            )}
+            <h1>Hello, {user ? user.email : 'Guest'}!</h1> {/* Display user's email */}
+            <button className="btn btn-danger" onClick={handleSignOut}>Sign Out</button>
         </div>
     );
 }
