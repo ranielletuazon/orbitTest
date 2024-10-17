@@ -1,11 +1,10 @@
 .spacePage {
-    background-color: #f0f0f0;
+    background-color: #041419;
     padding: 0;
     margin: 0;
     min-height: 100vh;
     font-family: "Poppins", sans-serif;
 
-    /* Display Options */
     display: flex;
     flex-direction: row;
 }
@@ -18,6 +17,7 @@
 }
 
 .headerPage {
+    box-sizing: border-box;
     background-color: #062c30;
     width: 6em;
     margin: 0;
@@ -32,24 +32,16 @@
 .contentPage {
     background-color: #041419;
     width: 100%;
+    max-width: 1200px; /* This limits the max width of the page */
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .sidebarPage {
     background-color: #062c30;
     width: 20em;
-}
-
-.profileImage {
-    width: 2rem;  /* Adjust size */
-    height: 2rem; /* Adjust size */
-    border-radius: 50%;  /* Circular profile image */
-    object-fit: cover;  /* Ensure the image is properly fitted */
-}
-
-.logoImage {
-    width: 2rem;  
-    height: 2rem; 
-    object-fit: cover;  
+    display: flex;
+    flex-direction: column;
 }
 
 /* Fix for settings button */
@@ -64,13 +56,6 @@
     display: flex;
     justify-content: center; /* Center the button horizontally */
     align-items: center; /* Center the button vertically */
-}
-
-.settingsButton {
-    background: none; /* Remove default button styling */
-    border: none;
-    padding: 0;
-    cursor: pointer; /* Change cursor to pointer */
 }
 
 /* Pop up window for gear/settings */
@@ -99,9 +84,98 @@
     visibility: visible; 
 }
 
-.contentPage{
+.contentPage {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
+
+.chooseMultiplayerGame {
+    width: 15rem; 
+    height: 2.2rem; 
+    background-color: #062c30; 
+    margin-right: .5rem; 
+    border-radius: 1rem; /* Add border radius here */
+}
+
+.gameButton {
+    width: 8rem; 
+    height: 2.2rem; 
+    background-color: #2cc6ff; 
+    border-radius: 1rem; /* Add border radius here */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.popularGameTab{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+.recentMatchesTab{
+    width: 90%;
+    display: flex;
+}
+
+.sidebarPage{
+    display: flex;
+    padding: 1rem;
+    border-left: 1px solid #107d82;
+}
+
+@media (max-width: 768px) {
+    .contentPage {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+.popularGamesHolder{
+    display: flex;
+    flex-direction: row;
+}
+
+.popularGamesBox {
+    width: 20rem;
+    height: 10rem;
+    background-color: white;
+    border-radius: 10px;
+    margin-top: 1rem;
+}
+
+
+.matchesTitle{
+    color: white;
+    font-size: 1.25rem;
+
+}
+
+.userName{
+    margin-left: 1rem;
+}
+
+.usersHolder{
+    display: flex;
+    flex-direction: row;
+}
+
+.profileButton {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.profileContainer{
+    cursor: pointer;
+}
+
+.profileImage:hover {
+    filter: brightness(0.7); /* Darkens the image when hovered */
+}
+

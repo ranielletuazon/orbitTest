@@ -4,6 +4,7 @@ import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import Space from './pages/Space.jsx';
+import Profile from './pages/Profile.jsx'; // Import the Profile component
 
 import { auth } from './firebase/firebase.jsx';
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
@@ -11,20 +12,20 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [isFetching, setIsFetching] = useState(true); // Initialize fetching state
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log('Auth State Changed:', user); // Log user state
-      setUser(user); // Set user state to the authenticated user or null if not authenticated
-      setIsFetching(false); // Update fetching state regardless of authentication
+      console.log('Auth State Changed:', user); 
+      setUser(user);
+      setIsFetching(false);
     });
 
-    return () => unsubscribe(); // Cleanup listener
+    return () => unsubscribe();
   }, []);
 
   if (isFetching) {
-    return <h2>Loading...</h2>; // Show loading state while checking auth
+    return <h2>Loading...</h2>; 
   }
 
   return (
@@ -38,6 +39,14 @@ function App() {
           element={
             <ProtectedRoute user={user}> {/* Pass user to ProtectedRoute */}
               <Space user={user} /> {/* Pass user to Space */}
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/space/profile" 
+          element={
+            <ProtectedRoute user={user}> {/* Pass user to ProtectedRoute */}
+              <Profile user={user} /> {/* Pass user to Profile */}
             </ProtectedRoute>
           } 
         />

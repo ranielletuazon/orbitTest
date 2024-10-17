@@ -1,0 +1,89 @@
+.headerPage {
+    box-sizing: border-box;
+    background-color: #062c30;
+    width: 6em;
+    margin: 0;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border-right: 1px solid #107d82;
+}
+
+.profileImage {
+    width: 2rem;  
+    height: 2rem; 
+    border-radius: 50%;  
+    object-fit: cover;  
+}
+
+.logoImage {
+    width: 2rem;  
+    height: 2rem; 
+    object-fit: cover;  
+}
+
+.settingsButton {
+    background: none; 
+    border: none;
+    padding: 0;
+}
+
+.settingsButton:hover{
+    filter: brightness(.7);
+}
+
+.settingsContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 7rem;
+    margin-left: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    visibility: hidden;
+}
+
+.popup.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.profileButton {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.profileContainer{
+    cursor: pointer;
+}
+
+.profileImage:hover {
+    filter: brightness(0.7); /* Darkens the image when hovered */
+}
+
+.signOutButton {
+    color: black;
+    border: none;
+    cursor: pointer;
+    width: 7rem;
+}

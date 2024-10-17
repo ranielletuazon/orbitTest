@@ -1,0 +1,124 @@
+.containerPage{
+    background-color: #041419;
+    padding: 0;
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Poppins", sans-serif;
+
+    /* Display Options */
+    display: flex;
+    flex-direction: row;
+}
+
+.profileField {
+    margin-bottom: 20px;
+}
+
+.profileField label {
+    margin-right: 10px;
+}
+
+.updateButton {
+    background-color: #2cc6ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.updateButton:hover {
+    background-color: #1ea3db;
+}
+
+.contentPage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    background-color: #041419;
+    width: 100%;
+    max-width: 1200px; /* This limits the max width of the page */
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.containerCard{
+    padding: 2rem;
+    border: grey 1px solid;
+    border-radius: 1rem;
+    width: 45rem;
+    height: auto;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+    position: relative;
+}
+
+.escapeSection{
+    color: white;
+    position: absolute;
+    top: -40px;
+    right: 20px;
+}
+
+.escButton{
+    color: white;
+    background: none; 
+    border: none;
+    padding: 0;
+}
+
+.escapeSection:hover{
+    filter: brightness(0.7);
+}
+
+.profilePage{
+    color: white;
+    padding: 0;
+    margin: 0;
+}
+
+.profilePage h3{
+    margin: 0;
+}
+
+.editProfileImageHandler{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background: rgba(95, 95, 95, 0.2);
+    width: 100%;
+    height: auto;
+    padding: 2rem;
+    
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.profileImage{
+    width: 5rem;
+    height: auto;
+    border-radius: 50%;
+}
+
+.editImageButtonHandler {
+    margin-top: 10px;
+}
+
+.uploadLabel {
+    display: inline-block;
+    padding: 10px;
+    border: #2cc6ff 1px solid;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.uploadLabel:hover{
+    filter: brightness(.7);
+}
+
+.editImageButton {
+    display: none; /* Hide the actual file input */
+}
+

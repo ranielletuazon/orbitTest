@@ -1,0 +1,17 @@
+.sidebarPage {
+    background-color: #062c30;
+    width: 20em;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-left: 1px solid #107d82;
+}
+
+.matchesTitle {
+    color: white;
+    font-size: 1.25rem;
+}
+
+.matchedUsersHolder {
+    /* Placeholder for matched users */
+}
