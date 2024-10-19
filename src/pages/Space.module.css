@@ -35,6 +35,8 @@
     max-width: 1200px; /* This limits the max width of the page */
     margin: 0 auto;
     box-sizing: border-box;
+    padding-left: 5rem; /* remember position */
+    padding-right: 20em; /* remember position */
 }
 
 .sidebarPage {

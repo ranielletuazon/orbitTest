@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { auth, db, storage } from '../firebase/firebase.jsx'; // Ensure storage is imported
+import { auth, db, storage } from '../firebase/firebase.jsx'; 
 import { useNavigate } from 'react-router-dom';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'; // Import uploadBytes for uploading files
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import styles from './Profile.module.css';
 import HeaderPage from './HeaderPage.jsx';
 import SidebarPage from './SidebarPage.jsx';
@@ -11,6 +11,7 @@ function Profile({ user }) {
     const [userData, setUserData] = useState(null);
     const [newUsername, setNewUsername] = useState('');
     const [profileImageUrl, setProfileImageUrl] = useState(null);
+    const [birthdate, setBirthdate] = useState(null); // To store the formatted birthdate
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -21,10 +22,17 @@ function Profile({ user }) {
                     const userDocSnap = await getDoc(userDocRef);
 
                     if (userDocSnap.exists()) {
-                        setUserData(userDocSnap.data());
-                        setNewUsername(userDocSnap.data().username);
-                        const userProfileImage = userDocSnap.data().profileImage;
-                        // Set to user's profile image or default image if not available
+                        const userData = userDocSnap.data();
+                        setUserData(userData);
+                        setNewUsername(userData.username);
+
+                        // Convert Firestore timestamp to Date format
+                        if (userData.birthdate) {
+                            const birthdateObj = userData.birthdate.toDate(); // Convert Firestore timestamp to Date
+                            setBirthdate(birthdateObj.toLocaleDateString()); // Format the date as MM/DD/YYYY
+                        }
+
+                        const userProfileImage = userData.profileImage;
                         setProfileImageUrl(userProfileImage || await fetchDefaultProfileImage());
                     }
                 } catch (error) {
@@ -40,10 +48,10 @@ function Profile({ user }) {
         try {
             const defaultImageRef = ref(storage, 'profileImages/defaultProfileImage.png');
             const url = await getDownloadURL(defaultImageRef);
-            return url; // Return the default image URL
+            return url;
         } catch (error) {
             console.error('Error fetching default profile image:', error);
-            return null; // Return null if there's an error fetching the default image
+            return null;
         }
     };
 
@@ -61,17 +69,22 @@ function Profile({ user }) {
 
     const handleProfileImageUpload = async (event) => {
         const file = event.target.files[0];
+        
         if (file) {
-            try {
-                const storageRef = ref(storage, `profileImages/${user.uid}`); // Store under UID to avoid duplication
-                await uploadBytes(storageRef, file); // Upload the file
-                const url = await getDownloadURL(storageRef); // Get the download URL
+            const fileSizeInMB = file.size / (1024 * 1024);
+            if (fileSizeInMB > 2) {
+                alert('File size exceeds the 2MB limit. Please choose a smaller file.');
+                return;
+            }
 
-                // Update Firestore with the new image URL
+            try {
+                const storageRef = ref(storage, `profileImages/${user.uid}`);
+                await uploadBytes(storageRef, file);
+                const url = await getDownloadURL(storageRef);
+
                 const userDocRef = doc(db, 'users', user.uid);
                 await updateDoc(userDocRef, { profileImage: url });
 
-                // Update local state to reflect the new image
                 setProfileImageUrl(url);
                 alert('Profile image updated successfully!');
             } catch (error) {
@@ -81,7 +94,7 @@ function Profile({ user }) {
     };
 
     const handleEscButton = () => {
-        navigate('/space'); // Navigate back to /space
+        navigate('/space');
     };
 
     return (
@@ -118,6 +131,33 @@ function Profile({ user }) {
                                             className={styles.editImageButton} 
                                         />
                                     </label>
+                                </div>
+                            </div>
+                            <div className={styles.profileDetails} style={{marginBottom: '1rem'}}>
+                                <div className={styles.styleDetails}>
+                                    <span>Username </span>
+                                    <span style={{fontSize: '1rem', color: 'white'}}>{newUsername || 'No username set'}</span>
+                                </div>
+                                <div className={styles.editUsername}>
+                                    <button className={styles.editButton}>Edit</button>
+                                </div>
+                            </div>
+                            <div className={styles.profileDetails} style={{marginBottom: '1rem'}}>
+                                <div className={styles.styleDetails}>
+                                    <span>Email </span>
+                                    <span style={{fontSize: '1rem', color: 'white'}}>{user?.email || 'No email available'}</span> 
+                                </div>
+                                <div className={styles.editEmail}>
+                                    <button className={styles.editButton}>Edit</button>
+                                </div>
+                            </div>
+                            <div className={styles.profileDetails}>
+                                <div className={styles.styleDetails}>
+                                    <span>Birthday </span>
+                                    <span style={{fontSize: '1rem', color: 'white'}}>{birthdate || 'No birthdate available'}</span>
+                                </div>
+                                <div className={styles.editBirthdate}>
+                                    <button className={styles.editButton}>Edit</button>
                                 </div>
                             </div>
                         </div>

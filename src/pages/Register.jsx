@@ -94,7 +94,7 @@ function Register() {
             // Store additional user data in Firestore
             await setDoc(doc(db, 'users', user.uid), {
                 username: username,
-                birthdate: birthdateTimestamp
+                birthdate: birthdateTimestamp,
             });
 
             navigate('/space');

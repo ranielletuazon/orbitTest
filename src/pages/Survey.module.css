@@ -1,0 +1,393 @@
+body{
+    font-family: "Poppins", sans-serif;
+}
+.container {
+    height: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column; /* Stacks elements vertically */
+    justify-content: flex-start; /* Align items starting from the top */
+    align-items: center;
+    background: rgb(5, 22, 26);
+    padding: 2rem;
+    background: linear-gradient(180deg, rgba(5, 22, 26, 1) 0%, rgba(7, 46, 51, 1) 100%);
+}
+
+.logo {
+    height: 3rem;
+    width: auto;
+    filter: drop-shadow(0 0 0.75rem #2cc6ff);
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    padding: 1rem;
+}
+
+.contentHeader {
+    margin-top: 1rem; /* Adds space between the logo and GDPR text */
+    text-align: center; /* Centers the GDPR text */
+    width: 55em;
+    border-bottom: 1px solid rgb(39, 39, 39);
+    margin-bottom: 2rem;
+}
+
+.contentCard{
+    color: rgb(105, 105, 105);
+    max-width: 55em;
+    width: 55em;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.contentCard img{
+    width: 30em;
+    height: auto;
+    border-radius: 1rem;
+    margin-right: 2rem;
+    box-shadow: rgba(17, 17, 26, 0.1) 0px 0px 16px;
+}
+
+.contentCard span{
+    display: block;
+    text-align: justify;
+}
+
+
+.contentHeader h2 {
+    font-size: 2.5rem;
+    color: white;    
+}
+
+.buttonHolder {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.buttonHolder label {
+    display: flex;
+    align-items: center;
+    font-size: .8rem;
+    color: #ffffff; /* Text color */
+    cursor: pointer; /* Changes the cursor when hovering over the label */
+    margin-bottom: 1rem;
+}
+
+.buttonHolder input[type="checkbox"] {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px; /* Adds spacing between checkbox and label text */
+    cursor: pointer;
+    appearance: none;
+    background-color: #f0f0f0; /* Default background */
+    border: 2px solid #ccc; /* Border around checkbox */
+    border-radius: 4px; /* Rounded corners */
+    transition: all 0.2s ease;
+}
+
+.buttonHolder input[type="checkbox"]:checked {
+    background-color: #2cc6ff; /* Green background when checked */
+}
+
+.buttonHolder input[type="checkbox"]:checked::before {
+    color: white;
+    font-size: 14px;
+    position: absolute;
+    left: 4px;
+    top: 0;
+}
+
+.buttonHolder input[type="checkbox"]:hover {
+    border-color: #2cc6ff; /* Change border color on hover */
+}
+
+.progress{
+    margin-bottom: 1rem;
+    color: rgb(105, 105, 105);
+}
+
+.previousButton, 
+button {
+    padding: .6rem 1rem; /* Add padding for button size */
+    border: none; /* Remove default borders */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+
+.footer {
+    bottom: 0;
+    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position:fixed;
+    width: 100%;
+    padding-top: 1rem;
+    border-top: #2cc6ff 1px solid;
+    background-color: #05161a;
+}
+
+.footer button {
+    padding: .6rem 1rem;
+    background-color: #2cc6ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.footer button:disabled {
+    background-color: #ccc; /* Gray background when disabled */
+    cursor: not-allowed;
+}
+
+.footer button:hover:not(:disabled) {
+    background-color: #2cc6ff; /* Darker blue on hover */
+}
+
+.selectionHolder{
+    width: 30em;
+    min-height: 20em;
+    display:flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    padding-bottom: 10em;
+}
+
+
+.selectionHolder1{
+    width: 40em;
+    min-height: 30em;
+    display:flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    padding-bottom: 10em;
+}
+
+.genreBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background-color: #333333;
+    border: 1px solid rgb(255, 255, 255);
+    width: 9em;
+    height: 9em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.genreBox span {
+    margin-top: 0.5rem;
+    color: white;
+    font-size: 1rem;
+}
+
+.genreBox:hover {
+    background-color: #444444;
+    transform: scale(1.05); /* Make the box bigger on hover */
+}
+
+.genreBox.selected {
+    background-color: #2cc6ff;
+    border-color: #2cc6ff;
+}
+
+.contentCardGame{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 30vh;
+}
+
+.searchBar {
+    background-color: #333333;
+    border: #2cc6ff 1px solid;
+    width: 30em;
+    height: 3em;
+    border-radius: 2rem;
+    margin-bottom: 2rem;
+    color: white;
+    padding: 0 1em; /* Add horizontal padding for space on the left and right */
+    font-size: 16px; /* Ensure the font size is set for better visibility */
+}
+
+.searchBar::placeholder {
+    color: #aaa; /* Change the color of the placeholder text */
+    opacity: 0.7; /* Optional: Adjust opacity for a softer look */
+}
+
+
+
+.gameSelection{
+    display: flex;
+    width: 65em;
+    height: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    gap: 1rem;
+}
+
+.gamebox{
+    width: 15em;
+    height: 10rem;
+    border: 1px solid white;
+    border-radius: 5px;
+    position: relative;
+    background-size: cover; /* Ensure the image covers the entire box */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent image repetition */
+    font-weight: bold; /* Bold text for better visibility */
+    transition: border 0.3s; /* Smooth transition for border color */
+    cursor: pointer;
+    transition: border 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transition for border color and scale */
+}
+
+.gamebox:hover {
+    transform: scale(1.05); /* Scale up slightly on hover */
+    border-color: #2cc6ff; /* Change border color on hover */
+    box-shadow: 0 0 15px rgba(44, 198, 255, 0.7); /* Enhanced shadow effect on hover */
+}
+
+.gamebox.selected {
+    border-color: #2cc6ff; /* Highlight selected game box */
+    box-shadow: 0 0 20px rgba(44, 198, 255, 0.5); /* Optional shadow effect */
+}
+
+.gamebox span{
+    bottom: 0;
+    position: absolute;
+    padding: 10px;
+    height: auto;
+    width: 100%;
+    color: white;
+    text-shadow: -1px 1px 0 #000,
+                 1px 1px 0 #000,
+                 1px -1px 0 #000,
+                 -1px -1px 0 #000;
+    background-color: rgba(51, 51, 51, 0.3);
+}
+
+.placeHolderGender{
+    width: 30em;
+    display: flex;
+    flex-direction: row;
+    color: white;
+}
+
+.contentCardPersonal{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
+
+.placeHolderGender span{
+    padding-right: 1rem;
+    margin-bottom: 1rem;
+}
+
+.inputAge{
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.inputAge i{
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 2rem;
+}
+
+.maleBox{
+    background-color: #333333;
+    width: 10em;
+    height: 10em;
+    border: 1px solid white;
+    border-radius: 5px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.femaleBox{
+    background-color: #333333;
+    width: 10em;
+    height: 10em;
+    border: 1px solid white;
+    border-radius: 5px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.neutralBox{
+    background-color: #333333;
+    width: 10em;
+    height: 10em;
+    border: 1px solid white;
+    border-radius: 5px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.maleBox.selected,
+.femaleBox.selected,
+.neutralBox.selected {
+    background-color: #2cc6ff; /* Highlight color for selected gender */
+    border-color: #2cc6ff; /* Change border color for selected */
+    box-shadow: 0 0 15px rgba(44, 198, 255, 0.5); /* Optional shadow effect for visual emphasis */
+    transform: scale(1.05); /* Slightly increase the size when selected */
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.maleBox:hover,
+.femaleBox:hover,
+.neutralBox:hover {
+    transform: scale(1.05); /* Hover effect */
+    border-color: #2cc6ff; /* Change border color on hover */
+}
+
+/* Add these styles to Survey.module.css */
+.fade {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; /* Adjust duration and timing function as needed */
+}
+
+.fade-in {
+    opacity: 1; /* Final opacity when visible */
+}

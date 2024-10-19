@@ -1,0 +1,15 @@
+                    {/* {gameOptions.map((game) => (
+                        <div key={game.id}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    value={game.id}
+                                    checked={selectedGames.includes(game.id)}
+                                    onChange={() => handleGameSelection(game.id)}
+                                />
+                                {game.title}
+                            </label>
+                        </div>
+                    ))} */}
+
+                    This is to save buttonsssss     (they are inside of form)            <form> </form>

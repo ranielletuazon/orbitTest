@@ -1,15 +1,28 @@
+/* Updated styles for sidebarPage */
 .sidebarPage {
     background-color: #062c30;
-    width: 20em;
+    width: 20em; /* Adjust the width of the sidebar */
+    height: 100vh;
     display: flex;
     flex-direction: column;
     padding: 1rem;
     border-left: 1px solid #107d82;
+
+    position: fixed;
+    right: 0;
 }
 
-.matchesTitle {
+
+.sidebarTitle {
     color: white;
     font-size: 1.25rem;
+}
+
+.matchesTitle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
 }
 
 .matchedUsersHolder {

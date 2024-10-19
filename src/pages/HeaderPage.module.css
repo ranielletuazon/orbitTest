@@ -2,6 +2,7 @@
     box-sizing: border-box;
     background-color: #062c30;
     width: 6em;
+    height: 100vh;
     margin: 0;
     padding: 15px;
     display: flex;
@@ -9,6 +10,9 @@
     justify-content: space-between;
     align-items: center;
     border-right: 1px solid #107d82;
+
+    position: fixed;
+    left: 0;
 }
 
 .profileImage {
