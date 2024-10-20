@@ -12,7 +12,7 @@ function AdminConsole() {
     const [searchTerm, setSearchTerm] = useState(''); // State for search input
     const navigate = useNavigate();
 
-    const adminUID = 'OwrzqbBtwjP6Lx6fzFrnnQ1IaB62'; // Admin UID
+    const adminUID = '9uIKwsGZGbRzKo9SfMnWqD8Vbhu1'; // Admin UID
 
     // Ensure only the admin can access this page
     useEffect(() => {

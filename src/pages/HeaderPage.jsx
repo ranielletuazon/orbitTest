@@ -3,13 +3,14 @@ import { signOut } from 'firebase/auth';
 import { auth, storage, db } from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import { getDownloadURL, ref } from 'firebase/storage';
-import { doc, getDoc } from 'firebase/firestore';
-import styles from './HeaderPage.module.css';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import styles from './HeaderPage.module.css'; // Assuming CSS modules
 
 function HeaderPage({ user }) {
     const [logoImageUrl, setLogoImageUrl] = useState(null);
     const [profileImageUrl, setProfileImageUrl] = useState(null);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [isLoadingSignOut, setIsLoadingSignOut] = useState(false); // New state for loading spinner
     const popupRef = useRef(null);
     const buttonRef = useRef(null);
     const navigate = useNavigate();
@@ -62,12 +63,25 @@ function HeaderPage({ user }) {
         fetchProfileImage();
     }, [user]);
 
-    const handleSignOut = () => {
+    const handleSignOut = async () => {
+        setIsLoadingSignOut(true); // Show the spinner when sign out is initiated
+
+        if (user && user.uid) {
+            const userDocRef = doc(db, 'users', user.uid);
+            await updateDoc(userDocRef, {
+                'userStatus.isOnline': false // Update online status in Firestore
+            });
+        }
+
         signOut(auth)
             .then(() => {
+                setIsLoadingSignOut(false); // Hide the spinner after sign-out completes
                 navigate('/login');
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+                console.log(error);
+                setIsLoadingSignOut(false); // Hide spinner in case of error
+            });
     };
 
     const togglePopup = () => {
@@ -127,7 +141,17 @@ function HeaderPage({ user }) {
                 </button>
                 <div ref={popupRef} className={`${styles.popup} ${isPopupVisible ? styles.active : ''}`}>
                     {isPopupVisible && (
-                        <button className={styles.signOutButton} onClick={handleSignOut}>Sign Out</button>
+                        <button 
+                            className={styles.signOutButton} 
+                            onClick={handleSignOut}
+                            disabled={isLoadingSignOut} // Disable button when loading
+                        >
+                            {isLoadingSignOut ? (
+                                <div className={styles.spinner}></div> // Show spinner if loading
+                            ) : (
+                                'Sign Out'
+                            )}
+                        </button>
                     )}
                 </div>
             </span>

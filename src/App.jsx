@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -8,14 +9,25 @@ import Space from './pages/Space.jsx';
 import Profile from './pages/Profile.jsx'; // Import the Profile component
 import Survey from './pages/Survey.jsx'; // Import the Survey component
 import AdminConsole from './pages/AdminConsole.jsx'; // Import the AdminConsole component
+import LoadingScreen from './pages/LoadingScreen.jsx';
 import { auth, db } from './firebase/firebase.jsx'; // Import db for Firestore access
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
-import { useEffect, useState } from 'react';
 
 function App() {
   const [user, setUser] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
   const [surveyCompleted, setSurveyCompleted] = useState(null); // To track survey completion status
+  const [isOnline, setIsOnline] = useState(null); // State to store online status
+  const [isLoadingMinTime, setIsLoadingMinTime] = useState(true); // State to control 3 seconds delay
+
+  // Minimum 3-second loading delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingMinTime(false); // After 3 seconds, this becomes false
+    }, 1000);
+
+    return () => clearTimeout(timer); // Cleanup the timer if the component unmounts
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -28,6 +40,10 @@ function App() {
         if (userDocSnap.exists()) {
           const userData = userDocSnap.data();
           setSurveyCompleted(userData.surveyCompleted || false); // Default to false if not set
+
+          // Retrieve and log the user's online status
+          const onlineStatus = userData.userStatus?.isOnline; // Adjust based on your Firestore structure
+          setIsOnline(onlineStatus);
         } else {
           setSurveyCompleted(false); // If no user data, assume survey not completed
         }
@@ -38,8 +54,9 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (isFetching) {
-    return <h2>Loading...</h2>; // Show loading while fetching auth state
+  // Check if either the data is fetching or the minimum 3 seconds has not elapsed
+  if (isFetching || isLoadingMinTime) {
+    return <LoadingScreen />; // Show loading while fetching auth state and ensure minimum 3 seconds
   }
 
   return (
@@ -77,7 +94,7 @@ function App() {
           path="/space/adminconsole"
           element={
             <ProtectedRoute user={user}> {/* Pass user to ProtectedRoute */}
-              {user && user.uid === 'OwrzqbBtwjP6Lx6fzFrnnQ1IaB62' ? (
+              {user && user.uid === '9uIKwsGZGbRzKo9SfMnWqD8Vbhu1' ? (
                 <AdminConsole /> // Render AdminConsole if the user is the admin
               ) : (
                 <h2>Access Denied</h2> // Show Access Denied for non-admins

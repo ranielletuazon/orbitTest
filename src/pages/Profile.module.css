@@ -12,6 +12,17 @@
     flex-direction: row;
 }
 
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px); /* Optional: add a slight movement */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 
 .profileField {
     margin-bottom: 20px;
@@ -44,6 +55,9 @@
     max-width: 1200px; /* This limits the max width of the page */
     margin: 0 auto;
     box-sizing: border-box;
+
+    animation: fadeIn 0.8s ease-in-out; /* Apply the fade-in animation */
+    opacity: 1; /* Ensure it's visible after animation */
 }
 
 .containerCard{

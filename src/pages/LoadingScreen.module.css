@@ -1,0 +1,29 @@
+/* LoadingScreen.module.css or global CSS */
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full screen height */
+    background-color: #1a1a1a; /* Dark background for contrast */
+    color: white; /* Text color */
+}
+
+.spinner {
+    border: 8px solid #f3f3f3; /* Light grey border */
+    border-top: 8px solid #3498db; /* Blue top border */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loadingText {
+    font-size: 1.5rem;
+    margin-left: 1rem;
+    color: #ffffff;
+}

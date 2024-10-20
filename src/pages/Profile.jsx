@@ -20,18 +20,18 @@ function Profile({ user }) {
                 try {
                     const userDocRef = doc(db, 'users', user.uid);
                     const userDocSnap = await getDoc(userDocRef);
-
+    
                     if (userDocSnap.exists()) {
                         const userData = userDocSnap.data();
                         setUserData(userData);
                         setNewUsername(userData.username);
-
-                        // Convert Firestore timestamp to Date format
+    
+                        // Convert Firestore timestamp to Date format and display as "Month 00, 0000"
                         if (userData.birthdate) {
                             const birthdateObj = userData.birthdate.toDate(); // Convert Firestore timestamp to Date
-                            setBirthdate(birthdateObj.toLocaleDateString()); // Format the date as MM/DD/YYYY
+                            setBirthdate(birthdateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })); // Format date
                         }
-
+    
                         const userProfileImage = userData.profileImage;
                         setProfileImageUrl(userProfileImage || await fetchDefaultProfileImage());
                     }
@@ -40,9 +40,10 @@ function Profile({ user }) {
                 }
             }
         };
-
+    
         fetchUserData();
     }, [user]);
+    
 
     const fetchDefaultProfileImage = async () => {
         try {

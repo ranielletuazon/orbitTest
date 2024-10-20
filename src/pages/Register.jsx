@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from "../firebase/firebase.jsx";
 import { doc, setDoc, Timestamp } from 'firebase/firestore';
+import { ClipLoader } from 'react-spinners'; // Import the spinner
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -14,6 +15,7 @@ function Register() {
     const [usernameError, setUsernameError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [birthdateError, setBirthdateError] = useState('');
+    const [loading, setLoading] = useState(false); // Loading state for spinner
 
     const navigate = useNavigate();
 
@@ -29,7 +31,7 @@ function Register() {
         setUsernameError('');
         setPasswordError('');
         setBirthdateError('');
-
+        setLoading(true); // Start loading when the user clicks "Continue"
         let hasError = false;
 
         // Validation checks
@@ -37,10 +39,12 @@ function Register() {
             setEmailError('Please enter your email address.');
             hasError = true;
         } else {
-            // Check for valid email format
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 setEmailError('Please enter a valid email address.');
+                hasError = true;
+            } else if (email.length > 24) {
+                setEmailError('Email cannot exceed 24 characters.');
                 hasError = true;
             }
         }
@@ -50,6 +54,9 @@ function Register() {
             hasError = true;
         } else if (username.length <= 6) {
             setUsernameError('Username must be longer than 6 characters.');
+            hasError = true;
+        } else if (username.length > 24) {
+            setUsernameError('Username cannot exceed 24 characters.');
             hasError = true;
         }
 
@@ -75,14 +82,17 @@ function Register() {
             }
         }
 
-        // Validate username against regex
+        // Validate username against regex (letters, numbers, and underscores only)
         const usernameRegex = /^[a-zA-Z0-9_]+$/;
         if (!usernameRegex.test(username)) {
             setUsernameError('Username cannot contain special characters.');
             hasError = true;
         }
 
-        if (hasError) return; // Stop execution if there are validation errors
+        if (hasError) {
+            setLoading(false); // Stop loading if validation fails
+            return; // Stop execution if there are validation errors
+        }
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -111,6 +121,8 @@ function Register() {
                 // Set a generic error message for other errors
                 setEmailError('Error creating user. Please try again.');
             }
+        } finally {
+            setLoading(false); // Stop loading after the process completes (success or fail)
         }
     };
 
@@ -138,6 +150,7 @@ function Register() {
                                 placeholder="Enter your email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                disabled={loading} // Disable input when loading
                             />
                         </div>
 
@@ -152,6 +165,7 @@ function Register() {
                                 placeholder="Enter your username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
+                                disabled={loading} // Disable input when loading
                             />
                         </div>
 
@@ -166,6 +180,7 @@ function Register() {
                                 placeholder="Enter your password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                disabled={loading} // Disable input when loading
                             />
                         </div>
 
@@ -179,11 +194,21 @@ function Register() {
                                 className="input-box-birth"
                                 value={birthdate}
                                 onChange={(e) => setBirthdate(e.target.value)}
+                                disabled={loading} // Disable input when loading
                             />
                         </div>
 
-                        <button type="submit" className="btn btn-primary" style={{ marginTop: 27 }}>
-                            Continue
+                        <button 
+                            type="submit" 
+                            className="btn btn-primary" 
+                            style={{ marginTop: 27 }} 
+                            disabled={loading} // Disable button while loading
+                        >
+                            {loading ? ( // Show spinner if loading
+                                <ClipLoader color="#fff" size={20} />
+                            ) : (
+                                'Continue'
+                            )}
                         </button>
 
                         <span

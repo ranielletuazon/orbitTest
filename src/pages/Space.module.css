@@ -9,6 +9,17 @@
     flex-direction: row;
 }
 
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px); /* Optional: add a slight movement */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .signOutButton {
     color: black;
     border: none;
@@ -37,6 +48,9 @@
     box-sizing: border-box;
     padding-left: 5rem; /* remember position */
     padding-right: 20em; /* remember position */
+
+    animation: fadeIn 0.8s ease-in-out; /* Apply the fade-in animation */
+    opacity: 1; /* Ensure it's visible after animation */
 }
 
 .sidebarPage {
@@ -95,11 +109,17 @@
 
 .chooseMultiplayerGame {
     width: 15rem; 
+    border: 1px solid #2cc6ff;
     height: 2.2rem; 
     background-color: #062c30; 
     margin-right: .5rem; 
     border-radius: 1rem; /* Add border radius here */
+    color: white;
+    padding: 0.5rem; /* Reduced padding */
+    padding: 0 1rem; /* Keep this to maintain space for the caret */
+    position: relative;
 }
+
 
 .gameButton {
     width: 8rem; 
@@ -113,11 +133,64 @@
     color: white;
 }
 
+.searchSection {
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Needed for positioning the disappearingBlock */
+}
+
+.disappearingBlock {
+    position: absolute;
+    background-color: #333333; 
+    margin-top: 3rem;
+    width: 20rem;
+    border-radius: 1rem;
+    z-index: 10;
+    padding: 0.5rem;
+    max-height: 15rem;
+    overflow-y: auto; /* Allow scrolling if too many items */
+    height: auto;
+}
+
+.searchGamesBox {
+    color: white;
+    padding: 0.5rem 1rem;
+    background-color: #444;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    transition: background-color 0.2s ease;
+    height: auto;
+}
+
+.searchGamesBox:hover {
+    background-color: #555;
+}
+
+.searchGamesBox:last-child {
+    margin-bottom: 0;
+}
+
+.chooseMultiplayerGame {
+    width: 20rem;
+    border: 1px solid #2cc6ff;
+    height: 2.5rem; 
+    background-color: #062c30; 
+    border-radius: 1rem;
+    color: white;
+    padding: 0 1rem;
+}
+
 .popularGameTab{
     width: 90%;
     display: flex;
     flex-direction: column;
 }
+
+.popularGamesHolder{
+    display: flex;
+}
+
 
 .recentMatchesTab{
     width: 90%;

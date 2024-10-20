@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';  // Import React, useState, and useEffect
+import React, { useState, useEffect } from 'react';  
 import logo from './assets/logo.png';
 import './login.css';
 import { Navigate, useNavigate } from 'react-router-dom'; 
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from "../firebase/firebase.jsx";  // Firebase import
+import { auth } from "../firebase/firebase.jsx";  
+import { ClipLoader } from 'react-spinners';  
+import { doc, updateDoc } from 'firebase/firestore'; // Import updateDoc
+import { db } from "../firebase/firebase.jsx"; // Import db for Firestore access
 
 function Login({ user }) {
   const navigate = useNavigate();
 
-  // State for email, password, and error message
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // Error state
+  const [error, setError] = useState(''); 
+  const [loading, setLoading] = useState(false); 
 
-  // Redirect to "/space" if user is already authenticated
   useEffect(() => {
     if (user) {
-      navigate('/space');  // Automatically redirect authenticated users
+      navigate('/space');  
     }
   }, [user, navigate]);
 
@@ -24,27 +26,37 @@ function Login({ user }) {
     navigate('/register');  
   };
 
-  // Sign in with email and password
   const handleSignIn = (e) => {
-    e.preventDefault(); // Prevent the default form submission
+    e.preventDefault(); 
 
-    if (!email || !password) return;  // Check if inputs are valid
+    if (!email || !password) return;  
+
+    setLoading(true);  
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+      .then(async (userCredential) => {
         const user = userCredential.user;
-        console.log(user);  // Handle successful login
-        navigate('/space');  // Redirect after login
-        setError(''); // Clear error on successful login
+        console.log(user);  
+
+        // Update the user's isOnline status in Firestore
+        const userDocRef = doc(db, 'users', user.uid);
+        await updateDoc(userDocRef, {
+          'userStatus.isOnline': true // Set isOnline to true
+        });
+
+        navigate('/space');  
+        setError(''); 
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);  
-        setError('Email Address or Password is invalid'); // Set error message
+        setError('Email Address or Password is invalid'); 
+      })
+      .finally(() => {
+        setLoading(false);  
       });
   };
 
-  // Prevent logged-in users from accessing the login page
   if (user) {
     return <Navigate to="/space" />;
   }
@@ -57,15 +69,15 @@ function Login({ user }) {
         </div>
       </header>
 
-      <div className={`center-container ${error ? 'shake' : ''}`}> {/* Add shake class conditionally */}
+      <div className={`center-container ${error ? 'shake' : ''}`}>
         <div className="card">
           <div className="card-header">
             <h4>WELCOME BACK!</h4>
             <h5>Best of luck to your games!</h5>
           </div>
-          <form className="card-body" onSubmit={handleSignIn}> {/* Handle form submission */}
+          <form className="card-body" onSubmit={handleSignIn}>
             <p className="card-title" style={{ color: error ? '#e36f74' : 'inherit' }}>
-              EMAIL {error && `- ${error}`} {/* Display error message */}
+              EMAIL {error && `- ${error}`} 
             </p>
             <input 
               type="email" 
@@ -74,10 +86,11 @@ function Login({ user }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)} 
               required
+              disabled={loading} 
             />
 
             <p className="card-title" style={{ color: error ? '#e36f74' : 'inherit' }}>
-              PASSWORD {error && `- ${error}`} {/* Display error message */}
+              PASSWORD {error && `- ${error}`} 
             </p>
             <input 
               type="password" 
@@ -86,6 +99,7 @@ function Login({ user }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}  
               required
+              disabled={loading} 
             />
 
             <span 
@@ -95,8 +109,17 @@ function Login({ user }) {
               FORGOT YOUR PASSWORD?
             </span>
 
-            <button type="submit" className="btn btn-primary">  
-              Login
+            <button 
+              type="submit" 
+              className="btn btn-primary" 
+              disabled={loading} 
+              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >  
+              {loading ? (
+                <ClipLoader color="#fff" size={21} />
+              ) : (
+                'Login'
+              )}
             </button> 
 
             <p className='card-title' style={{ marginTop: 5 }}>
