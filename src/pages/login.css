@@ -96,6 +96,7 @@
     height: 40px;         /* Set a fixed height */
     padding: 10px;        /* Add some padding for comfort */
     border-radius: 5px;   /* Rounded corners */
+    margin: auto;
     border: 1px solid #313131; /* Add a border with a matching color */
     font-size: 15px;      /* Set the font size */
     background-color: #313131; /* Background color for the input */
@@ -107,6 +108,7 @@
     height: 40px;         /* Set a fixed height */
     padding: 10px;        /* Add some padding for comfort */
     border-radius: 5px;   /* Rounded corners */
+    margin: auto;
     border: 1px solid #313131; /* Add a border with a matching color */
     font-size: 15px;      /* Set the font size */
     background-color: #313131; /* Background color for the input */

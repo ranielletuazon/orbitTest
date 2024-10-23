@@ -10,14 +10,14 @@ import Profile from './pages/Profile.jsx'; // Import the Profile component
 import Survey from './pages/Survey.jsx'; // Import the Survey component
 import AdminConsole from './pages/AdminConsole.jsx'; // Import the AdminConsole component
 import LoadingScreen from './pages/LoadingScreen.jsx';
+import Spaceship from './pages/Spaceship.jsx'; // Import the Spaceship component
 import { auth, db } from './firebase/firebase.jsx'; // Import db for Firestore access
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 
 function App() {
   const [user, setUser] = useState(null);
   const [isFetching, setIsFetching] = useState(true);
-  const [surveyCompleted, setSurveyCompleted] = useState(null); // To track survey completion status
-  const [isOnline, setIsOnline] = useState(null); // State to store online status
+  const [surveyCompleted, setSurveyCompleted] = useState(false); // Initialize to false
   const [isLoadingMinTime, setIsLoadingMinTime] = useState(true); // State to control 3 seconds delay
 
   // Minimum 3-second loading delay
@@ -39,14 +39,12 @@ function App() {
 
         if (userDocSnap.exists()) {
           const userData = userDocSnap.data();
-          setSurveyCompleted(userData.surveyCompleted || false); // Default to false if not set
-
-          // Retrieve and log the user's online status
-          const onlineStatus = userData.userStatus?.isOnline; // Adjust based on your Firestore structure
-          setIsOnline(onlineStatus);
+          setSurveyCompleted(userData.surveyCompleted || false); // Update survey completion status
         } else {
           setSurveyCompleted(false); // If no user data, assume survey not completed
         }
+      } else {
+        setSurveyCompleted(false); // Reset survey completion on logout
       }
       setIsFetching(false); // Finish fetching whether user is authenticated
     });
@@ -85,6 +83,16 @@ function App() {
           element={
             <ProtectedRoute user={user}> {/* Pass user to ProtectedRoute */}
               <Profile user={user} /> {/* Pass user to Profile */}
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Add Spaceship route */}
+        <Route
+          path="/space/ship"
+          element={
+            <ProtectedRoute user={user}> {/* Pass user to ProtectedRoute */}
+              <Spaceship  user={user}/> {/* Render the Spaceship component */}
             </ProtectedRoute>
           }
         />

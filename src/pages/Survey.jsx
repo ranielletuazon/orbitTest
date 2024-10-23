@@ -110,7 +110,6 @@ function Survey({ user }) {
                         isUserQueue: false // Set isUserQueue to false
                     }
                 });
-                alert('Survey completed successfully!');
                 navigate('/space'); // Navigate to /space
     
                 // Optional: Refresh the /space page after navigation

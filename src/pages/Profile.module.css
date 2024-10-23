@@ -1,11 +1,18 @@
+.spaceBody{
+    height: auto;
+    width: auto;
+    background: #041419;
+}
+
 .containerPage{
     background-color: #041419;
     padding: 0;
-    padding-left: 5rem; /* remember position */
+    padding-left: 6rem; /* remember position */
     padding-right: 20em; /* remember position */
     margin: 0;
     min-height: 100vh;
     font-family: "Poppins", sans-serif;
+    animation: fadeIn 0.8s ease-in-out; /* Apply the fade-in animation */
 
     /* Display Options */
     display: flex;
@@ -15,7 +22,6 @@
 @keyframes fadeIn {
     0% {
         opacity: 0;
-        transform: translateY(20px); /* Optional: add a slight movement */
     }
     100% {
         opacity: 1;
@@ -51,12 +57,9 @@
     width: 100%;
 
     background-color: #041419;
-    width: 100%;
-    max-width: 1200px; /* This limits the max width of the page */
     margin: 0 auto;
     box-sizing: border-box;
 
-    animation: fadeIn 0.8s ease-in-out; /* Apply the fade-in animation */
     opacity: 1; /* Ensure it's visible after animation */
 }
 
@@ -66,10 +69,40 @@
     border-radius: 1rem;
     width: 45rem;
     height: auto;
+    min-height: 25em;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
     position: relative;
 }
+
+.loadingCard{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    width: 40rem;
+    height: auto;
+    min-height: 25em;
+
+    position: relative;
+}
+
+.spinner {
+    border: 4px solid white;
+    border-left-color: #2cc6ff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
 
 .escapeSection{
     color: white;
@@ -168,4 +201,59 @@
 
 .editButton:hover{
     background: #757474;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background-color: #041419;
+    padding: 1rem;
+    border-radius: 1rem;
+    width: 25em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    position: relative;
+}
+
+.modalButtons{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: .5rem;
+    font-size: 1rem;
+}
+
+.buttonX{
+    background: none;
+    border: none;
+    color: white;
+}
+
+.modalHeader{
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.modalMessage{
+    color:#555;
+}
+
+
+.modalContent p {
+    color: #333;
 }
