@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { doc, setDoc, serverTimestamp, getDoc, deleteField } from "firebase/firestore";
 import { db } from "../firebase/firebase.jsx";
@@ -18,6 +18,13 @@ function Spaceship({ user }) {
     const [userData, setUserData] = useState([]);
     const [loading, setLoading] = useState(false); 
     const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+
+    useEffect(() => {
+        // If no game is selected, redirect the user to /space
+        if (!selectedGame) {
+            navigate('/space');
+        }
+    }, [selectedGame, navigate]);
 
     const handleBioChange = (e) => setBio(e.target.value);
     const handleGameTypeChange = (e) => setGameType(e.target.value);
@@ -134,7 +141,7 @@ function Spaceship({ user }) {
                     <HeaderPage user={user} />
                     <div className={styles.contentBody}>
                         <div className={styles.card}>
-                            <button className={styles.quitButton} onClick={() => setIsModalOpen(true)}>
+                            <button className={styles.quitButtons} onClick={() => setIsModalOpen(true)}>
                                 <i className="fa-regular fa-circle-xmark"></i>
                             </button>
                             <div className={styles.titleCard}>

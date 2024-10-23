@@ -99,24 +99,27 @@ function Space({ user }) {
     }, []);
 
     // Handle clicking the search button to navigate to /space/ship
+    // Handle clicking the search button to navigate to /space/ship
     const handleSearchButtonClick = async () => {
+        if (!userData || userData.isUpdated === false || userData.isUpdated === undefined) {
+            // Show modal if profile needs updating (if isUpdated is false or does not exist)
+            setIsModalVisible(true);
+            setModalMessage('For a better experience, please update your profile information.');
+            return;
+        }
+        
         if (!selectedGame) {
             // Show modal if no game is selected
             setIsModalVisible(true);
-            setModalMessage('Please select a game to continue.'); // Custom message for no game selected
+            setModalMessage('Please select a game to continue.');
             return;
         }
 
-        // Check if user's profile is updated
-        if (userData && userData.isUpdated === false) {
-            setIsModalVisible(true); // Show modal if profile needs updating
-            setModalMessage('For a better experience, please update your profile information.'); // Custom message for profile update
-            return;
-        }
-
-        console.log('Selected game before navigating:', selectedGame); // Log the selected game here
-        navigate('/space/ship', { state: { selectedGame } }); // Pass the selected game to Spaceship
+        // If the profile is updated, navigate to /space/ship with the selected game
+        console.log('Selected game before navigating:', selectedGame);
+        navigate('/space/ship', { state: { selectedGame } });
     };
+
 
     // Handle closing modal and navigating to profile
     const handleProfileUpdate = () => {
