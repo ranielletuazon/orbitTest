@@ -15,17 +15,18 @@ function AdminConsole() {
     const adminUID = '9uIKwsGZGbRzKo9SfMnWqD8Vbhu1'; // Admin UID
 
     // Ensure only the admin can access this page
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (!user || user.uid !== adminUID) {
-                alert('You are not authorized to access this page.');
-                navigate('/login');
-            }
-        });
-        return () => unsubscribe();
-    }, [navigate]);
+    // useEffect(() => {
+    //     const unsubscribe = auth.onAuthStateChanged((user) => {
+    //         if (!user || user.uid !== adminUID) {
+    //             alert('You are not authorized to access this page.');
+    //             navigate('/login');
+    //         }
+    //     });
+    //     return () => unsubscribe();
+    // }, [navigate]);
 
     // Fetch all games from Firestore
+    
     useEffect(() => {
         const fetchGames = async () => {
             try {

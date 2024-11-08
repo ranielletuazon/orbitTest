@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import Home from './pages/Home.jsx';
@@ -11,6 +11,7 @@ import Survey from './pages/Survey.jsx'; // Import the Survey component
 import AdminConsole from './pages/AdminConsole.jsx'; // Import the AdminConsole component
 import LoadingScreen from './pages/LoadingScreen.jsx';
 import Spaceship from './pages/Spaceship.jsx'; // Import the Spaceship component
+import Message from './pages/Message.jsx';
 import { auth, db } from './firebase/firebase.jsx'; // Import db for Firestore access
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 
@@ -97,16 +98,21 @@ function App() {
           }
         />
 
+        <Route
+          path="/space/messages"
+          element={
+            <ProtectedRoute user={user}>
+              <Message user={user}/> {/* Render AdminConsole without UID check */}
+            </ProtectedRoute>
+          }
+        />
+
         {/* Admin Console route, only accessible to the admin with a specific UID */}
         <Route
           path="/space/adminconsole"
           element={
-            <ProtectedRoute user={user}> {/* Pass user to ProtectedRoute */}
-              {user && user.uid === '9uIKwsGZGbRzKo9SfMnWqD8Vbhu1' ? (
-                <AdminConsole /> // Render AdminConsole if the user is the admin
-              ) : (
-                <h2>Access Denied</h2> // Show Access Denied for non-admins
-              )}
+            <ProtectedRoute user={user}>
+              <AdminConsole /> {/* Render AdminConsole without UID check */}
             </ProtectedRoute>
           }
         />

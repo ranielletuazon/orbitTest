@@ -68,19 +68,6 @@ function Profile({ user }) {
         setIsModalVisible(true);
     };
 
-    const handleUpdateUsername = async () => {
-        if (user) {
-            try {
-                const userDocRef = doc(db, 'users', user.uid);
-                await updateDoc(userDocRef, { username: newUsername });
-                showModal('Profile updated successfully!'); // Show success message in modal
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                showModal('Error updating profile. Please try again.'); // Show error message in modal
-            }
-        }
-    };
-
     const handleProfileImageUpload = async (event) => {
         const file = event.target.files[0];
         
@@ -169,7 +156,7 @@ function Profile({ user }) {
                                                 <span style={{fontSize: '1rem', color: 'white'}}>{newUsername || 'No username set'}</span>
                                             </div>
                                             <div className={styles.editUsername}>
-                                                <button className={styles.editButton} onClick={handleUpdateUsername}>Edit</button>
+                                                <button className={styles.editButton}>Edit</button>
                                             </div>
                                         </div>
                                         <div className={styles.profileDetails} style={{marginBottom: '1rem'}}>
@@ -207,7 +194,7 @@ function Profile({ user }) {
                         <div className={styles.modalMessage}>{modalMessage}</div>
                         <div className={styles.modalButtons}>
                             <button onClick={handleCloseModal} className={styles.buttonX}>
-                            <i class="fa-regular fa-circle-xmark"></i>
+                            <i className="fa-regular fa-circle-xmark"></i>
                             </button>
                         </div>
                     </div>

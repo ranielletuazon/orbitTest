@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { doc, setDoc, serverTimestamp, getDoc, deleteField } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp, getDoc, deleteField, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase.jsx";
 import styles from './Spaceship.module.css';
+import { collection, updateDoc, arrayUnion } from "firebase/firestore";
 
 import HeaderPage from './HeaderPage.jsx';
 import SidebarPage from './SidebarPage.jsx';
@@ -17,7 +18,9 @@ function Spaceship({ user }) {
     const [gameRank, setGameRank] = useState('');
     const [userData, setUserData] = useState([]);
     const [loading, setLoading] = useState(false); 
-    const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+    const [isModalOpen, setIsModalOpen] = useState(false); // State for confirmation modal
+    const [openModals, setOpenModals] = useState([]); // Array to manage multiple message modals
+    const [currentUserId, setCurrentUserId] = useState(null); // Add state variable for current user ID
 
     useEffect(() => {
         // If no game is selected, redirect the user to /space
@@ -29,6 +32,7 @@ function Spaceship({ user }) {
     const handleBioChange = (e) => setBio(e.target.value);
     const handleGameTypeChange = (e) => setGameType(e.target.value);
     const handleGameRankChange = (e) => setGameRank(e.target.value);
+
 
     const handleStart = async () => {
         if (!selectedGame) {
@@ -85,6 +89,8 @@ function Spaceship({ user }) {
                     ...data,
                 }));
                 setUserData(usersArray);
+                // Initialize openModals with false values for each user
+                setOpenModals(usersArray.map(() => false));
             } else {
                 console.log('No users found for this game.');
                 setUserData([]);
@@ -111,7 +117,7 @@ function Spaceship({ user }) {
 
             console.log('User data deleted successfully from Firestore');
             fetchUserData(gameID);
-            navigate('/space');
+            navigate(-1);
         } catch (error) {
             console.error('Error deleting user data from Firestore:', error);
         }
@@ -133,6 +139,97 @@ function Spaceship({ user }) {
             console.log('No game selected for refresh.');
         }
     };
+
+    const handleSendMessage = async () => {
+        console.log(user.uid);
+        console.log(currentUserId); // Use currentUserId instead of selectedUserID
+    
+        const messagesRef = collection(db, "messages");
+        const chatsRef = collection(db, "chats");
+    
+        try {
+            // Create a new message document
+            const newMessageRef = doc(messagesRef);
+            await setDoc(newMessageRef, {
+                createAt: serverTimestamp(),
+                messages: []
+            });
+    
+            // Ensure the chat documents exist before updating them
+            const userChatRef = doc(chatsRef, user.uid);
+            const currentUserChatRef = doc(chatsRef, currentUserId);
+    
+            const userChatDoc = await getDoc(userChatRef);
+            const currentUserChatDoc = await getDoc(currentUserChatRef);
+    
+            if (!userChatDoc.exists()) {
+                // If the user's chat document doesn't exist, create it
+                await setDoc(userChatRef, {
+                    chatsData: []
+                });
+            }
+    
+            if (!currentUserChatDoc.exists()) {
+                // If the other user's chat document doesn't exist, create it
+                await setDoc(currentUserChatRef, {
+                    chatsData: []
+                });
+            }
+    
+            // Update the chats with the new message
+            await updateDoc(userChatRef, {
+                chatsData: arrayUnion({
+                    messageId: newMessageRef.id,
+                    lastMessage: "",
+                    rId: currentUserId,
+                    updatedAt: Date.now(),
+                    messageSeen: true,
+                })
+            });
+    
+            await updateDoc(currentUserChatRef, { // Update for the other user
+                chatsData: arrayUnion({
+                    messageId: newMessageRef.id,
+                    lastMessage: "",
+                    rId: user.uid,
+                    updatedAt: Date.now(),
+                    messageSeen: true,
+                })
+            });
+    
+        } catch (error) {
+            console.error("Error sending message:", error);
+        }
+    };
+    
+    
+    
+    const toggleMessageModal = (index, selectedUserID) => {
+        console.log("Logged-in User ID:", user.uid);
+        console.log("Selected User ID:", selectedUserID);
+    
+        setCurrentUserId(selectedUserID); // Set selectedUserID when opening
+        setOpenModals((prev) => {
+            const newModals = [...prev];
+            newModals[index] = !newModals[index];
+            return newModals;
+        });
+    };
+    
+    const closeMessageModal = (index) => {
+        setCurrentUserId(""); // Clear currentUserId when closing
+        setOpenModals((prev) => {
+            const newModals = [...prev];
+            newModals[index] = false; // Explicitly set to false
+            return newModals;
+        });
+    };
+
+    useEffect(() => {
+        console.log("Current User ID updated:", currentUserId);
+    }, [currentUserId]);
+
+    //Idea stops here
 
     return (
         <>
@@ -207,8 +304,9 @@ function Spaceship({ user }) {
                                         <div className={styles.userResults}>
                                             {userData
                                                 .filter(userItem => userItem.userID !== user.uid)
-                                                .map((userItem) => (
-                                                    <div key={userItem.userID} className={styles.userBar}>
+                                                .map((userItem, index) => {
+                                                    return(
+                                                        <div key={userItem.userID} className={styles.userBar}>
                                                         <div className={styles.profile}>
                                                             <div className={styles.profileHandler}>
                                                                 <img src={userItem.profileImage} alt={`${userItem.username}'s profile`} className={styles.profileImage} />
@@ -223,11 +321,29 @@ function Spaceship({ user }) {
                                                             <div className={styles.userGameTypeDisplay}>{userItem.gameType}</div>
                                                             <div className={styles.userGameRankDisplay}>{userItem.gameRank}</div>
                                                         </div>
-                                                        <button className={styles.messageButton}>
+                                                        <button className={styles.messageButton} onClick={() => toggleMessageModal(index, userItem.userID)}>
                                                             <i className="fa-solid fa-comment-dots"></i>
                                                         </button>
+                                                        {openModals[index] && (
+                                                            <div className={styles.messageOverlay}>
+                                                                <div className={styles.messageModal}>
+                                                                    <div className={styles.modalHeader}>
+                                                                        To: {userItem.username}
+                                                                        <button className={styles.modalCloseButton} onClick={() => closeMessageModal(index)}>
+                                                                            <i className="fa-regular fa-circle-xmark"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div className={styles.messageHandler}>
+                                                                        <input className={styles.modalTextArea} placeholder="Write a message to invite this player..."/>
+                                                                        <button onClick={handleSendMessage}className={styles.modalSendButton}><i className="fa-solid fa-paper-plane"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                ))}
+                                                    );
+                                                
+                                                })}
                                         </div>
                                     )}
                                 </div>
@@ -235,7 +351,6 @@ function Spaceship({ user }) {
                             </div>
                         </div>
                     </div>
-                    <SidebarPage />
                 </div>
             </div>
 

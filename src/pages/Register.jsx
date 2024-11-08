@@ -105,6 +105,7 @@ function Register() {
             await setDoc(doc(db, 'users', user.uid), {
                 username: username,
                 birthdate: birthdateTimestamp,
+                id: user.uid
             });
 
             navigate('/space');

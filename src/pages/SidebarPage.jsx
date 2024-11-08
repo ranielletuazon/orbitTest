@@ -7,7 +7,7 @@ function SidebarPage() {
             <div className={styles.sidebarTitle}>
                 <div className={styles.matchesTitle}>
                     <span>Messages</span>
-                    <div className={styles.messageLogo}><i class="fa-solid fa-paper-plane"></i></div>
+                    <div className={styles.messageLogo}><i className="fa-solid fa-paper-plane"></i></div>
                 </div>
                 <div className={styles.matchedUsersHolder}>
                     {/* <div className={styles.usersHolder}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, addDoc,setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase/firebase.jsx';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
@@ -80,6 +80,8 @@ function Survey({ user }) {
         setStep(step - 1); // Move to the previous step
     };
 
+    const chatDocRef = doc(db, 'chats', user.uid); // Create a subcollection under the user document
+
     // Submit survey and update Firestore
     const handleSubmitSurvey = async () => {
         if (user && selectedGames.length > 0 && isVerifiedAge && isTermsAgreed) {
@@ -109,6 +111,10 @@ function Survey({ user }) {
                         isOnline: true, // Set isOnline to true
                         isUserQueue: false // Set isUserQueue to false
                     }
+                });
+
+                await setDoc(chatDocRef, {
+                    chatsData: [] // Initialize with empty data
                 });
                 navigate('/space'); // Navigate to /space
     

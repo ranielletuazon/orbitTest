@@ -203,7 +203,7 @@ function Space({ user }) {
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
                         <div className={styles.modalButtons}>
-                            <button className={styles.buttonX} onClick={() => setIsModalVisible(false)}> <i class="fa-regular fa-circle-xmark"></i> </button>
+                            <button className={styles.buttonX} onClick={() => setIsModalVisible(false)}> <i className="fa-regular fa-circle-xmark"></i> </button>
                         </div>
                         <div className={styles.modalHeader}>Update Required</div>
                         <div className={styles.modalMessage}>{modalMessage}</div>
