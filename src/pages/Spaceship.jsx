@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { doc, setDoc, serverTimestamp, getDoc, deleteField, getDocs } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp, getDoc, deleteField, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebase.jsx";
 import styles from './Spaceship.module.css';
 import { collection, updateDoc, arrayUnion } from "firebase/firestore";
 
 import HeaderPage from './HeaderPage.jsx';
-import SidebarPage from './SidebarPage.jsx';
 
 function Spaceship({ user }) {
     const location = useLocation();
@@ -21,13 +20,35 @@ function Spaceship({ user }) {
     const [isModalOpen, setIsModalOpen] = useState(false); // State for confirmation modal
     const [openModals, setOpenModals] = useState([]); // Array to manage multiple message modals
     const [currentUserId, setCurrentUserId] = useState(null); // Add state variable for current user ID
+    const [chatPartnerIDs, setChatPartnerIDs] = useState([]);
+
 
     useEffect(() => {
         // If no game is selected, redirect the user to /space
         if (!selectedGame) {
             navigate('/space');
+        } else {
+            fetchChatPartnerIDs(); // Fetch chat partner IDs once a game is selected
         }
     }, [selectedGame, navigate]);
+
+    const fetchChatPartnerIDs = async () => {
+        try {
+            const chatsRef = doc(db, 'chats', user.uid); // Reference to the user's chats document
+            const chatsDoc = await getDoc(chatsRef);
+
+            if (chatsDoc.exists()) {
+                const chatsData = chatsDoc.data().chatsData || [];
+                const partnerIDs = chatsData.map(chat => chat.rId); // Extract rId from each chat
+                setChatPartnerIDs(partnerIDs); // Store IDs in state
+            } else {
+                console.log("No chat data found for this user.");
+                setChatPartnerIDs([]); // Reset if no chats
+            }
+        } catch (error) {
+            console.error("Error fetching chat partner IDs:", error);
+        }
+    };
 
     const handleBioChange = (e) => setBio(e.target.value);
     const handleGameTypeChange = (e) => setGameType(e.target.value);
@@ -88,9 +109,14 @@ function Spaceship({ user }) {
                     userID: uid,
                     ...data,
                 }));
-                setUserData(usersArray);
-                // Initialize openModals with false values for each user
-                setOpenModals(usersArray.map(() => false));
+
+                // Filter out self and chat partners
+                const filteredUsers = usersArray.filter(
+                    userItem => userItem.userID !== user.uid && !chatPartnerIDs.includes(userItem.userID)
+                );
+
+                setUserData(filteredUsers);
+                setOpenModals(filteredUsers.map(() => false)); // Initialize openModals with filtered users
             } else {
                 console.log('No users found for this game.');
                 setUserData([]);
@@ -103,26 +129,30 @@ function Spaceship({ user }) {
     };
 
     const handleQuit = async () => {
+        navigate('/space'); //remove this once firebase is fixed
         if (!selectedGame) {
             console.error('No game selected');
             return;
         }
-
+    
         const gameID = selectedGame.id;
-
+    
         try {
+            // Delete user data from Firestore
             await setDoc(doc(db, 'usersQueue', gameID), {
                 [user.uid]: deleteField()
             }, { merge: true });
-
+    
             console.log('User data deleted successfully from Firestore');
             fetchUserData(gameID);
-            navigate(-1);
+    
+            // Navigate after the deletion is done
+            navigate('/space'); // Or navigate to another page, such as the game space
         } catch (error) {
             console.error('Error deleting user data from Firestore:', error);
         }
     };
-
+    
     const handleModalConfirmQuit = () => {
         handleQuit(); // Perform the quit operation
         setIsModalOpen(false); // Close modal after quitting
@@ -197,10 +227,14 @@ function Spaceship({ user }) {
                 })
             });
     
+            // After sending the message, navigate to the messages page
+            navigate('/space/messages');
+    
         } catch (error) {
             console.error("Error sending message:", error);
         }
     };
+    
     
     
     
@@ -234,6 +268,9 @@ function Spaceship({ user }) {
     return (
         <>
             <div className={styles.spaceshipBody}>
+                <button onClick={() => navigate('/space/messages')} className={styles.messagesButton}>
+                    <i className="fa-solid fa-message"></i>
+                </button>
                 <div className={styles.contentPage}>
                     <HeaderPage user={user} />
                     <div className={styles.contentBody}>

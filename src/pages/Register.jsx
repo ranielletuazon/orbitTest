@@ -43,8 +43,8 @@ function Register() {
             if (!emailRegex.test(email)) {
                 setEmailError('Please enter a valid email address.');
                 hasError = true;
-            } else if (email.length > 24) {
-                setEmailError('Email cannot exceed 24 characters.');
+            } else if (email.length > 46) {
+                setEmailError('Email cannot exceed 46 characters.');
                 hasError = true;
             }
         }

@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import styles from './Profile.module.css';
 import HeaderPage from './HeaderPage.jsx';
-import SidebarPage from './SidebarPage.jsx';
 
 function Profile({ user }) {
     const [userData, setUserData] = useState(null);
@@ -110,6 +109,9 @@ function Profile({ user }) {
     return (
         <>
             <div className={styles.spaceBody}>
+                <button onClick={() => navigate('/space/messages')} className={styles.messagesButton}>
+                    <i className="fa-solid fa-message"></i>
+                </button>
                 <div className={styles.containerPage}>
                     <HeaderPage user={user} />
                     <div className={styles.contentPage}>
@@ -182,7 +184,6 @@ function Profile({ user }) {
                             )}
                         </div>
                     </div>
-                    <SidebarPage />
                 </div>
             </div>
 

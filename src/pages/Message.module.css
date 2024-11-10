@@ -33,12 +33,12 @@
 .headerText{
     font-size: 1.4rem;
     margin: 1rem;
+    display: flex;
+    justify-content: space-between;
 }
 
 .userPlaceHolder{
     width: 100%;
-    padding-left: 1rem;
-    padding-right: 1rem;
 }
 
 .messageChats {
@@ -55,8 +55,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-top: .5rem;
-    padding-bottom: .5rem;
+    padding: 1rem;
+
 }
 
 .user:hover{
@@ -83,7 +83,6 @@
     width: 49em;
     height: 100%;
     background-color: #1c2120;
-    border-radius: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: flex-end; /* Align content to the bottom */
@@ -105,6 +104,7 @@
     height: 2rem;
     border-radius: 50%;
     margin-right: 0.5rem;
+    background-color: white;
     object-fit: cover;
 }
 
@@ -220,4 +220,11 @@
     display: flex;
     align-items: center;  /* Ensure profile image and message bubble are aligned */
     gap: 0.5rem;  /* Optional: Add some spacing between the profile image and message bubble */
+}
+
+.escButton{
+    color: rgba(255, 255, 255, .5);
+    background: none; 
+    border: none;
+    padding: 0;
 }

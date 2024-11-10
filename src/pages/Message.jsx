@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, updateDoc, onSnapshot, arrayUnion } from 'firebase/firestore';
 import { db, auth } from "../firebase/firebase.jsx";
 import styles from './Message.module.css';
@@ -6,6 +7,7 @@ import HeaderPage from './HeaderPage.jsx';
 import { text } from '@fortawesome/fontawesome-svg-core';
 
 function Message({ user }) {
+    const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const [chatData, setChatData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -13,14 +15,9 @@ function Message({ user }) {
     const [messages, setMessages] = useState([]);
     const [chatUser, setChatUser] = useState(null);
     const [input, setInput] = useState("")
-    const [newUser, setNewUser] = useState(null)
-    const chatBoxRef = useRef(null);
-
-    useEffect(() => {
-        if (chatBoxRef.current) {
-            chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-        }
-    }, [chatData]);
+    const [newUser, setNewUser] = useState(null); //fix soon
+    const [selectedChatId, setSelectedChatId] = useState(null);
+    const chatBoxRef = useRef(null);  
 
     const loadUserData = async (uid) => {
         try {
@@ -77,8 +74,9 @@ function Message({ user }) {
 
     const setChat = async (item) => {
         setMessagesId(item.messageId); // Set the selected user's data in chatUser
-        setChatUser(item)
-        console.log(chatUser.rId)
+        setChatUser(item);
+        setSelectedChatId(item.messageId); // Store the selected user's messageId
+        console.log("Selected Chat ID:", item.messageId);
     }
 
     const sendMessage = async () => {
@@ -128,7 +126,16 @@ function Message({ user }) {
             };
         }
     }, [messageId]);
+
+    const handleEscButton = () => {
+        navigate(-1);
+    };
     
+    useEffect(() => {
+        if (chatBoxRef.current) {
+            chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+        }
+    }, [chatData, messages]);
 
     return (
         <> 
@@ -136,17 +143,27 @@ function Message({ user }) {
                 <HeaderPage user={user} />
                 <div className={styles.messagePage}>
                     <div className={styles.messageBox}>
-                        <div className={styles.headerText}>Messages</div>
+                        <div className={styles.headerText}>
+                            <span>Messages</span>
+                            <button className={styles.escButton} onClick={handleEscButton}>
+                                <i className="fa-regular fa-circle-xmark"></i>
+                            </button></div>
                         <div className={styles.userPlaceHolder}>
                         {loading ? (
-                            <div>Loading users...</div>
+                            <div></div>
                         ) : (
                             chatData.map((chat, index) => (
-                                <div onClick={()=>setChat(chat)}key={index} className={styles.user}>
+                                <div 
+                                onClick={() => setChat(chat)}
+                                key={index} 
+                                className={styles.user}
+                                style={{
+                                    backgroundColor: selectedChatId === chat.messageId ? '#333' : 'transparent',
+                                }}>
                                     <div className={styles.profileImage}>
                                         {chat.userData.profileImage ? (
                                             <img
-                                                src={chat.userData.profileImage} // Use the URL from Firestore
+                                                src={chat.userData.profileImage} 
                                                 alt={`${chat.userData.username}'s profile`}
                                                 className={styles.profileImg} // Optionally add a custom class for styling
                                             />
@@ -173,7 +190,7 @@ function Message({ user }) {
                     </div>
                     <div className={styles.messageChats}>
                         <div className={styles.messageHeader}>
-                            {chatUser ? chatUser.userData.username : "Inbox"}
+                            {chatUser ? chatUser.userData.username : ""}
                         </div> {/* Header at the top */}
                         <div className={styles.chatBox} ref={chatBoxRef}>
                             {messages.map((message, index) => (
@@ -186,26 +203,43 @@ function Message({ user }) {
                                     ) : (
                                         // Other user's message
                                         <div className={styles.otherUserDetails}>
-                                            <div className={styles.senderProfileImage}></div>
+                                            <div className={styles.senderProfileImage}>
+                                                {/* Get the sender's profile image */}
+                                                {chatData.map((chat) => {
+                                                    if (chat.userData.id === message.sId) {
+                                                        return (
+                                                            <img 
+                                                                key={chat.userData.id} 
+                                                                src={chat.userData.profileImage || "path/to/default/image.jpg"} 
+                                                                alt={`${chat.userData.username}'s profile`} 
+                                                                className={styles.senderProfileImage}
+                                                            />
+                                                        );
+                                                    }
+                                                    return null; // No profile image for the sender if not found
+                                                })}
+                                            </div>
                                             <div className={styles.messages}>{message.text}</div>
                                         </div>
                                     )}
                                 </div>
                             ))}
                         </div>
-                        <div className={styles.inputContainer}>
-                            <div className={styles.inputBox}>
-                                <input
-                                    onChange={(e) => setInput(e.target.value)}
-                                    value={input}
-                                    type="text"
-                                    placeholder="Send a message..."
-                                />
+                        {chatUser && (
+                            <div className={styles.inputContainer}>
+                                <div className={styles.inputBox}>
+                                    <input
+                                        onChange={(e) => setInput(e.target.value)}
+                                        value={input}
+                                        type="text"
+                                        placeholder="Send a message..."
+                                    />
+                                </div>
+                                <button onClick={sendMessage} className={styles.sendButton}>
+                                    <i className="fa-solid fa-paper-plane"></i>
+                                </button>
                             </div>
-                            <button onClick={sendMessage} className={styles.sendButton}>
-                                <i className="fa-solid fa-paper-plane"></i>
-                            </button>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>

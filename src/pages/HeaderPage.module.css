@@ -72,8 +72,9 @@
 
 .profileButton {
     background-color: transparent;
-    border: none;
     cursor: pointer;
+    border: 1px solid #2cc6ff;
+    border-radius: 50%;
     padding: 0;
 }
 

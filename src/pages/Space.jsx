@@ -130,6 +130,9 @@ function Space({ user }) {
     return (
         <>
             <div className={styles.spaceBody}>
+                <button onClick={() => navigate('/space/messages')} className={styles.messagesButton}>
+                    <i className="fa-solid fa-message"></i>
+                </button>
                 <div className={styles.spacePage}> 
                     <HeaderPage user={user} className={styles.headerIndex}/>
                     <div className={styles.contentPage}>
@@ -157,7 +160,7 @@ function Space({ user }) {
                                     type="text" 
                                     value={searchTerm} 
                                     onChange={handleSearchChange} 
-                                    placeholder="Search games..."
+                                    placeholder="Choose a game..."
                                     onFocus={() => setShowSearchResults(true)} // Show results when focused
                                 />
                                 {/* Displaying search results */}
@@ -190,11 +193,11 @@ function Space({ user }) {
                             <span>Popular Games</span>
                             <div className={styles.popularGamesHolder}>
                                 <div className={styles.popularGamesBox} style={{marginRight: '1rem'}}></div>
+                                <div className={styles.popularGamesBox} style={{marginRight: '1rem'}}></div>
                                 <div className={styles.popularGamesBox}></div>
                             </div>
                         </div>
                     </div>
-                    <SidebarPage />
                 </div>
             </div>
 

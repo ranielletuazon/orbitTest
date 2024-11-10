@@ -4,6 +4,36 @@
     background: #041419;
     margin: 0;
     padding: 0;
+    position: relative;
+}
+
+.messagesButton{
+    position: absolute;
+    z-index: 100;
+    color: white;
+    background: #2cc6ff;
+    bottom: 0;
+    right: 0;
+    margin: 2rem;
+    padding: 1rem;
+    font-size: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.messagesButton:hover {
+    transform: scale(1.1);
+    background: #1fb1e5; /* Slightly darker shade for hover */
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 5px 12px; /* Stronger shadow on hover */
+}
+
+/* Click Effect */
+.messagesButton:active {
+    transform: scale(0.95); /* Slightly reduce size on click */
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 6px; /* Softer shadow on click */
 }
 
 .contentPage{
@@ -263,7 +293,7 @@ input{
     justify-content: space-between; /* Space between elements */
     color: white; /* Text color */
     padding: 1rem; /* Padding for inner spacing */
-    background-color: #1c2120; /* Background color */
+    background-color: #041419; /* Background color */
 }
 
 .profile {
@@ -307,18 +337,20 @@ input{
 }
 
 .userUserName {
-    font-weight: bold; /* Bold username */
     color: white; /* White color for better visibility */
+    font-size: .9rem;
 }
 
 .userBio {
     color: #8f8e8e; /* Gray color for the bio */
+    font-size: .8rem;
 }
 
 .gameTitle {
     color: #8f8e8e; /* Gray color for the game title */
     min-width: 11em; /* Minimum width for stability */
     max-width: 11em;
+    font-size: .9rem;
 }
 
 .gameTypeDisplay {
@@ -326,6 +358,7 @@ input{
     flex-direction: column; /* Stack game type and rank */
     color: #8f8e8e; /* Gray color for game type and rank */
     align-items: center; /* Center align items */
+    font-size: .8rem;
 }
 
 .userGameTypeDisplay,
