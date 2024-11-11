@@ -18,6 +18,7 @@ function Spaceship({ user }) {
     const [userData, setUserData] = useState([]);
     const [loading, setLoading] = useState(false); 
     const [isModalOpen, setIsModalOpen] = useState(false); // State for confirmation modal
+    const [isMessageSent, setIsMessageSent] = useState(false);
     const [openModals, setOpenModals] = useState([]); // Array to manage multiple message modals
     const [currentUserId, setCurrentUserId] = useState(null); // Add state variable for current user ID
     const [chatPartnerIDs, setChatPartnerIDs] = useState([]);
@@ -170,7 +171,7 @@ function Spaceship({ user }) {
         }
     };
 
-    const handleSendMessage = async () => {
+    const handleSendMessage = async (index) => {
         const messageText = document.querySelector(`.${styles.modalTextArea}`).value.trim(); // Get the input text
         if (!messageText) return; // Don't send empty messages
     
@@ -187,7 +188,7 @@ function Spaceship({ user }) {
                 messages: [{
                     sId: user.uid,
                     text: messageText,
-                    createdAt:new Date()
+                    createdAt: new Date()
                 }]
             });
     
@@ -233,14 +234,16 @@ function Spaceship({ user }) {
                 })
             });
     
+            closeMessageModal(index); // Close the modal after sending the message
+    
             // After sending the message, navigate to the messages page
-            navigate('/space/messages');
+            setIsMessageSent(true);
+
+            fetchUserData(selectedGame.id);//refresh the div
         } catch (error) {
             console.error("Error sending message:", error);
         }
     };
-    
-    
     
     
     const toggleMessageModal = (index, selectedUserID) => {
@@ -263,6 +266,10 @@ function Spaceship({ user }) {
             return newModals;
         });
     };
+
+    const closeNotifcation = () => {
+        setIsMessageSent(false);
+    }
 
     useEffect(() => {
         console.log("Current User ID updated:", currentUserId);
@@ -377,7 +384,7 @@ function Spaceship({ user }) {
                                                                     </div>
                                                                     <div className={styles.messageHandler}>
                                                                         <input className={styles.modalTextArea} placeholder="Write a message to this player..." maxLength="35"/>
-                                                                        <button onClick={handleSendMessage}className={styles.modalSendButton}><i className="fa-solid fa-paper-plane"></i></button>
+                                                                        <button onClick={() => handleSendMessage(index)} className={styles.modalSendButton}><i className="fa-solid fa-paper-plane"></i></button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -408,6 +415,19 @@ function Spaceship({ user }) {
                             <button className={styles.modalButton} onClick={handleModalCancel}>
                                 Cancel
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {isMessageSent && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <button className={styles.modalCloseButton} style={{margin:"11px 1rem"}} onClick={closeNotifcation}>
+                            <i className="fa-regular fa-circle-xmark"></i>
+                        </button>
+                        <div className={styles.modalHeader}>Notification</div>
+                        <div className={styles.modalText}>
+                            <span>Message has been sent!</span>
                         </div>
                     </div>
                 </div>

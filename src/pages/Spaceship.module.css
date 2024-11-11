@@ -425,6 +425,7 @@ input{
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    position: relative;
 
     animation: fadeDown .5s ease-in-out;
 }
@@ -506,6 +507,7 @@ input{
     border: none;
     right: 0;
     top: 0;
+    z-index: 10; 
 }
 
 .messageHandler{
@@ -540,4 +542,11 @@ input{
     justify-content: center;
     align-items: center;
     z-index: 1000;
+}
+
+.modalText{
+    display: flex;
+    height: 10em;
+    align-items: center;
+    color: white;
 }

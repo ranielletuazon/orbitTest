@@ -387,6 +387,12 @@
     transform: scale(0.98); /* Slightly shrink button to simulate press */
 }
 
+.gameButton:disabled {
+    background-color: #ccc; /* Change background color when disabled */
+    cursor: not-allowed; /* Show the not-allowed cursor */
+    opacity: 0.6; /* Make it appear faded */
+}
+
 .gameButton .clip-loader {
     margin: 0;
 }
