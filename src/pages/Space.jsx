@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { auth, db } from '../firebase/firebase.jsx'; 
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { ClipLoader } from 'react-spinners';
 
 import styles from './Space.module.css'; 
 
@@ -12,12 +13,14 @@ function Space({ user }) {
     const navigate = useNavigate();
     const [userData, setUserData] = useState(null);
     const [games, setGames] = useState([]); // List of games from Firestore
+    const [popularGames, setPopularGames] = useState([]); // State to store top 3 games
     const [searchTerm, setSearchTerm] = useState(''); // Search input state
     const [filteredGames, setFilteredGames] = useState([]); // Filtered games based on search term
     const [selectedGame, setSelectedGame] = useState(null); // State to hold the selected game
     const [showSearchResults, setShowSearchResults] = useState(false); // State to control visibility of search results
     const [isModalVisible, setIsModalVisible] = useState(false); // State to control modal visibility
     const [modalMessage, setModalMessage] = useState(''); // Initialize modalMessage state
+    const [loading, setLoading] = useState(false); // State to track loading status for search button
     const searchRef = useRef(null); // Reference for the search box container
 
     // Fetch user data
@@ -42,7 +45,7 @@ function Space({ user }) {
         fetchUserData();
     }, [user]);
 
-    // Fetch all games from Firestore
+    // Fetch all games from Firestore and sort by popularity
     useEffect(() => {
         const fetchGames = async () => {
             try {
@@ -51,8 +54,19 @@ function Space({ user }) {
                 const gamesList = gamesSnapshot.docs.map((doc) => ({
                     id: doc.id, // Document ID
                     title: doc.data().gameTitle, // Field for game title
+                    image: doc.data().gameImage, // Game image link
+                    popularity: doc.data().gamePopularity, // Game popularity
                 }));
-                setGames(gamesList); // Set the games in state
+
+                // Filter out games with no popularity (gamePopularity <= 0)
+                const filteredGames = gamesList.filter(game => game.popularity > 0);
+
+                // Sort games by popularity in descending order
+                const sortedGames = filteredGames.sort((a, b) => b.popularity - a.popularity);
+
+                // Get the top 3 most popular games
+                setPopularGames(sortedGames.slice(0, 3));
+                setGames(gamesList); // Set all games for search functionality
             } catch (error) {
                 console.error('Error fetching games:', error);
             }
@@ -99,12 +113,14 @@ function Space({ user }) {
     }, []);
 
     // Handle clicking the search button to navigate to /space/ship
-    // Handle clicking the search button to navigate to /space/ship
     const handleSearchButtonClick = async () => {
+        setLoading(true); // Start loading spinner
+
         if (!userData || userData.isUpdated === false || userData.isUpdated === undefined) {
             // Show modal if profile needs updating (if isUpdated is false or does not exist)
             setIsModalVisible(true);
             setModalMessage('For a better experience, please update your profile information.');
+            setLoading(false); // Stop loading spinner
             return;
         }
         
@@ -112,14 +128,16 @@ function Space({ user }) {
             // Show modal if no game is selected
             setIsModalVisible(true);
             setModalMessage('Please select a game to continue.');
+            setLoading(false); // Stop loading spinner
             return;
         }
 
         // If the profile is updated, navigate to /space/ship with the selected game
         console.log('Selected game before navigating:', selectedGame);
         navigate('/space/ship', { state: { selectedGame } });
-    };
 
+        setLoading(false); // Stop loading spinner after navigation
+    };
 
     // Handle closing modal and navigating to profile
     const handleProfileUpdate = () => {
@@ -145,8 +163,7 @@ function Space({ user }) {
                                 !
                             </span>
                         </div>
-                        
-                        {/* Game search section */}
+
                         <div className='gameSearcher'>
                             <span className="cardText" style={{ color: 'white', fontSize: '1.5rem'}}>FIND A TEAMMATE!</span>
                         </div>
@@ -185,16 +202,24 @@ function Space({ user }) {
                                 )}
                             </div>
                             <div className={styles.gameButton} onClick={handleSearchButtonClick}>
-                                <span>Search</span>
+                                {loading ? (
+                                    <ClipLoader size={24} color="#fff" loading={loading} />
+                                ) : (
+                                    <span>Search</span>
+                                )}
                             </div>
                         </form>
 
-                        <div className={styles.popularGameTab } style={{ color: 'white', fontSize: '1.5rem', marginBottom:'2rem'}}>
+                        {/* Popular Games */}
+                        <div className={styles.popularGameTab} style={{ color: 'white', fontSize: '1.5rem', marginBottom:'2rem'}}>
                             <span>Popular Games</span>
                             <div className={styles.popularGamesHolder}>
-                                <div className={styles.popularGamesBox} style={{marginRight: '1rem'}}></div>
-                                <div className={styles.popularGamesBox} style={{marginRight: '1rem'}}></div>
-                                <div className={styles.popularGamesBox}></div>
+                                {popularGames.map((game, index) => (
+                                    <div key={index} className={styles.popularGamesBox} style={{ marginRight: '1rem' }}>
+                                        <img src={game.image} alt={game.title} className={styles.gameImage} />
+                                        <span>{game.title}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>

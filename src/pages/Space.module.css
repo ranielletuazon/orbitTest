@@ -164,6 +164,7 @@
     justify-content: center;
     align-items: center;
     color: white;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
 }
 
 .searchSection {
@@ -246,14 +247,32 @@
 .popularGamesHolder{
     display: flex;
     flex-direction: row;
+    width: 40em;
 }
 
-.popularGamesBox {
+.popularGamesBox .gameImage {
     width: 20rem;
     height: 10rem;
-    background-color: white;
     border-radius: 10px;
     margin-top: 1rem;
+}
+
+.popularGamesBox{
+    position: relative;
+}
+
+.popularGamesBox span{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding-left: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    font-size: .8rem;
+    background-color: rgba(0, 0, 0, 0.8);
 }
 
 
@@ -355,4 +374,19 @@
 
 .modalContent p {
     color: #333;
+}
+
+
+.gameButton:hover {
+    background-color: #2cc7ff85; /* Darker blue when hovered */
+    transform: scale(1.05); /* Slightly enlarge button */
+}
+
+.gameButton:active {
+    background-color: #2cc7ff85; /* Even darker blue when clicked */
+    transform: scale(0.98); /* Slightly shrink button to simulate press */
+}
+
+.gameButton .clip-loader {
+    margin: 0;
 }

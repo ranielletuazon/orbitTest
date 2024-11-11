@@ -171,8 +171,11 @@ function Spaceship({ user }) {
     };
 
     const handleSendMessage = async () => {
-        console.log(user.uid);
-        console.log(currentUserId); // Use currentUserId instead of selectedUserID
+        const messageText = document.querySelector(`.${styles.modalTextArea}`).value.trim(); // Get the input text
+        if (!messageText) return; // Don't send empty messages
+    
+        console.log(user.uid); // Current user's UID
+        console.log(currentUserId); // The ID of the user being invited
     
         const messagesRef = collection(db, "messages");
         const chatsRef = collection(db, "chats");
@@ -181,8 +184,11 @@ function Spaceship({ user }) {
             // Create a new message document
             const newMessageRef = doc(messagesRef);
             await setDoc(newMessageRef, {
-                createAt: serverTimestamp(),
-                messages: []
+                messages: [{
+                    sId: user.uid,
+                    text: messageText,
+                    createdAt:new Date()
+                }]
             });
     
             // Ensure the chat documents exist before updating them
@@ -206,30 +212,29 @@ function Spaceship({ user }) {
                 });
             }
     
-            // Update the chats with the new message
+            // Update the chats with the new message and the last message text
             await updateDoc(userChatRef, {
                 chatsData: arrayUnion({
                     messageId: newMessageRef.id,
-                    lastMessage: "",
+                    lastMessage: messageText, // Set lastMessage to the current message
                     rId: currentUserId,
                     updatedAt: Date.now(),
-                    messageSeen: true,
+                    messageSeen: false, // Set as unread initially
                 })
             });
     
             await updateDoc(currentUserChatRef, { // Update for the other user
                 chatsData: arrayUnion({
                     messageId: newMessageRef.id,
-                    lastMessage: "",
+                    lastMessage: messageText, // Set lastMessage to the current message
                     rId: user.uid,
                     updatedAt: Date.now(),
-                    messageSeen: true,
+                    messageSeen: false, // Set as unread initially
                 })
             });
     
             // After sending the message, navigate to the messages page
             navigate('/space/messages');
-    
         } catch (error) {
             console.error("Error sending message:", error);
         }
@@ -359,19 +364,19 @@ function Spaceship({ user }) {
                                                             <div className={styles.userGameRankDisplay}>{userItem.gameRank}</div>
                                                         </div>
                                                         <button className={styles.messageButton} onClick={() => toggleMessageModal(index, userItem.userID)}>
-                                                            <i className="fa-solid fa-comment-dots"></i>
+                                                            <i className="fa-solid fa-gamepad"></i>
                                                         </button>
                                                         {openModals[index] && (
                                                             <div className={styles.messageOverlay}>
                                                                 <div className={styles.messageModal}>
                                                                     <div className={styles.modalHeader}>
-                                                                        To: {userItem.username}
+                                                                        Invite {userItem.username} to play with you?
                                                                         <button className={styles.modalCloseButton} onClick={() => closeMessageModal(index)}>
                                                                             <i className="fa-regular fa-circle-xmark"></i>
                                                                         </button>
                                                                     </div>
                                                                     <div className={styles.messageHandler}>
-                                                                        <input className={styles.modalTextArea} placeholder="Write a message to invite this player..."/>
+                                                                        <input className={styles.modalTextArea} placeholder="Write a message to this player..." maxLength="35"/>
                                                                         <button onClick={handleSendMessage}className={styles.modalSendButton}><i className="fa-solid fa-paper-plane"></i></button>
                                                                     </div>
                                                                 </div>
