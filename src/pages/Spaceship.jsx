@@ -238,8 +238,6 @@ function Spaceship({ user }) {
     
             // After sending the message, navigate to the messages page
             setIsMessageSent(true);
-
-            fetchUserData(selectedGame.id);//refresh the div
         } catch (error) {
             console.error("Error sending message:", error);
         }
@@ -269,6 +267,7 @@ function Spaceship({ user }) {
 
     const closeNotifcation = () => {
         setIsMessageSent(false);
+        fetchUserData(selectedGame.id);
     }
 
     useEffect(() => {
