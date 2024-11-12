@@ -72,11 +72,40 @@ function Message({ user }) {
         }
     }, [userData]);
 
+    const markChatAsRead = async (chat) => {
+        try {
+            // Check if the chat is already marked as seen
+            if (chat.messageSeen) return;
+    
+            // Update the `messageSeen` status to true for the selected chat
+            const userChatsRef = doc(db, 'chats', userData.id);
+            const userChatsSnapshot = await getDoc(userChatsRef);
+    
+            if (userChatsSnapshot.exists()) {
+                const userChatData = userChatsSnapshot.data();
+                const chatIndex = userChatData.chatsData.findIndex(c => c.messageId === chat.messageId);
+    
+                // If the chat exists, update `messageSeen`
+                if (chatIndex > -1) {
+                    userChatData.chatsData[chatIndex].messageSeen = true;
+    
+                    await updateDoc(userChatsRef, {
+                        chatsData: userChatData.chatsData,
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Error marking chat as read:", error);
+        }
+    };
+
     const setChat = async (item) => {
         setMessagesId(item.messageId); // Set the selected user's data in chatUser
         setChatUser(item);
         setSelectedChatId(item.messageId); // Store the selected user's messageId
         console.log("Selected Chat ID:", item.messageId);
+
+        await markChatAsRead(item);
     }
 
     const sendMessage = async () => {
@@ -179,7 +208,13 @@ function Message({ user }) {
                                         <div className={styles.userName}>
                                             {chat.userData.username}
                                         </div>
-                                        <div className={styles.lastMessage}>
+                                        <div className={styles.lastMessage}style={{
+                                            color: selectedChatId === chat.messageId 
+                                                ? 'grey'
+                                                : chat.messageSeen === false 
+                                                ? 'white' 
+                                                : 'grey',
+                                        }}>
                                             {chat.lastMessage || ""}
                                         </div>
                                     </div>

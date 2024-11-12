@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { doc, setDoc, serverTimestamp, getDoc, deleteField, getDocs, query, where } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp, getDoc, deleteField, getDocs, query, where, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/firebase.jsx";
 import styles from './Spaceship.module.css';
 import { collection, updateDoc, arrayUnion } from "firebase/firestore";
@@ -22,16 +22,37 @@ function Spaceship({ user }) {
     const [openModals, setOpenModals] = useState([]); // Array to manage multiple message modals
     const [currentUserId, setCurrentUserId] = useState(null); // Add state variable for current user ID
     const [chatPartnerIDs, setChatPartnerIDs] = useState([]);
-
+    const [isOnQueue, setIsOnQueue] = useState(false);
+    const [unreadCount, setUnreadCount] = useState(0); // To notification
 
     useEffect(() => {
         // If no game is selected, redirect the user to /space
         if (!selectedGame) {
             navigate('/space');
         } else {
-            fetchChatPartnerIDs(); // Fetch chat partner IDs once a game is selected
+            fetchChatPartnerIDs(); 
+            checkQueueStatus();
         }
     }, [selectedGame, navigate]);
+
+    const checkQueueStatus = async () => {
+        if (!selectedGame) return;
+
+        try {
+            const gameID = selectedGame.id;
+            const queueDocRef = doc(db, 'usersQueue', gameID);
+            const queueDoc = await getDoc(queueDocRef);
+
+            // Check if user's UID exists in the document's fields
+            if (queueDoc.exists() && queueDoc.data()[user.uid]) {
+                setIsOnQueue(true); // User is already in queue
+            } else {
+                setIsOnQueue(false); // User is not in queue
+            }
+        } catch (error) {
+            console.error('Error checking queue status:', error);
+        }
+    };
 
     const fetchChatPartnerIDs = async () => {
         try {
@@ -54,7 +75,6 @@ function Spaceship({ user }) {
     const handleBioChange = (e) => setBio(e.target.value);
     const handleGameTypeChange = (e) => setGameType(e.target.value);
     const handleGameRankChange = (e) => setGameRank(e.target.value);
-
 
     const handleStart = async () => {
         if (!selectedGame) {
@@ -92,42 +112,53 @@ function Spaceship({ user }) {
             }, { merge: true });
 
             console.log('User data stored successfully in Firestore');
+            setIsOnQueue(true);
             fetchUserData(gameID);
         } catch (error) {
             console.error('Error storing data in Firestore:', error);
         }
     };
 
-    const fetchUserData = async (gameID) => {
-        setLoading(true);
-        try {
-            const usersRef = doc(db, 'usersQueue', gameID);
-            const usersDoc = await getDoc(usersRef);
-
-            if (usersDoc.exists()) {
-                const usersData = usersDoc.data();
+    const fetchUserData = (gameID) => {
+        setLoading(true); // Set loading to true when fetching starts
+        const usersRef = doc(db, 'usersQueue', gameID);
+    
+        // Listen for real-time changes to the usersQueue document
+        const unsubscribe = onSnapshot(usersRef, (docSnapshot) => {
+            if (docSnapshot.exists()) {
+                const usersData = docSnapshot.data();
                 const usersArray = Object.entries(usersData).map(([uid, data]) => ({
                     userID: uid,
                     ...data,
                 }));
-
-                // Filter out self and chat partners
+    
+                // Filter out self and chat partners dynamically
                 const filteredUsers = usersArray.filter(
                     userItem => userItem.userID !== user.uid && !chatPartnerIDs.includes(userItem.userID)
                 );
-
-                setUserData(filteredUsers);
-                setOpenModals(filteredUsers.map(() => false)); // Initialize openModals with filtered users
+    
+                setUserData(filteredUsers); // Update state with the latest filtered users
             } else {
                 console.log('No users found for this game.');
-                setUserData([]);
+                setUserData([]); // If no data, set empty array
             }
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        } finally {
-            setLoading(false);
-        }
+        }, (error) => {
+            console.error("Error fetching user data:", error);
+        });
+    
+        // Make sure to stop loading after the real-time listener is set up and completed
+        setLoading(false); // Ensure loading is set to false after the function completes, not just in error handling
+    
+        // Optionally return the unsubscribe function to stop listening when the component unmounts
+        return unsubscribe;
     };
+    
+    useEffect(() => {
+        if (selectedGame) {
+            fetchUserData(selectedGame.id); // Call fetchUserData whenever the game ID or chat partners change
+        }
+    }, [selectedGame, chatPartnerIDs]); // Depend on `chatPartnerIDs` to trigger updates when chat partners change
+    
 
     const handleQuit = async () => {
         navigate('/space'); //remove this once firebase is fixed
@@ -238,6 +269,7 @@ function Spaceship({ user }) {
     
             // After sending the message, navigate to the messages page
             setIsMessageSent(true);
+            
         } catch (error) {
             console.error("Error sending message:", error);
         }
@@ -276,16 +308,51 @@ function Spaceship({ user }) {
 
     //Idea stops here
 
+    useEffect(() => {
+        const fetchUnreadMessages = async () => {
+            try {
+                // Reference to the 'chats' collection
+                const chatsRef = doc(db, 'chats', user.uid);
+                const chatsSnapshot = await getDoc(chatsRef);
+                const chatsData = chatsSnapshot.exists() ? chatsSnapshot.data().chatsData : [];
+                
+                // Filter unread messages where messageSeen is false
+                const unreadMessages = chatsData.filter(chat => chat.messageSeen === false);
+                setUnreadCount(unreadMessages.length);
+            } catch (error) {
+                console.error('Error fetching unread messages:', error);
+            }
+        };
+    
+        if (user) {
+            fetchUnreadMessages();
+        }
+    }, [user]);
+
     return (
         <>
             <div className={styles.spaceshipBody}>
                 <button onClick={() => navigate('/space/messages')} className={styles.messagesButton}>
+                    {unreadCount > 0 && (
+                        <div className={styles.notificationPop}></div>
+                    )}
                     <i className="fa-solid fa-message"></i>
                 </button>
                 <div className={styles.contentPage}>
                     <HeaderPage user={user} />
                     <div className={styles.contentBody}>
                         <div className={styles.card}>
+                            <div className={styles.statusUser}>
+                                <div
+                                    className={styles.circle}
+                                    style={{
+                                        backgroundColor: isOnQueue ? "#2cc6ff" : "grey" , opacity: isOnQueue ? 1 : 0.4,
+                                    }}
+                                ></div>
+                                <span style={{ color: isOnQueue ? "#2cc6ff" : "grey", opacity: isOnQueue ? 1 : 0.4, }}>
+                                    {isOnQueue ? "On Queue" : "Click Start to Queue"}
+                                </span>
+                            </div>
                             <button className={styles.quitButtons} onClick={() => setIsModalOpen(true)}>
                                 <i className="fa-regular fa-circle-xmark"></i>
                             </button>
@@ -310,6 +377,7 @@ function Spaceship({ user }) {
                                             className={styles.inputBio}
                                             type="text"
                                             placeholder="Add bio..."
+                                            maxLength="25"
                                             value={bio}
                                             onChange={handleBioChange}
                                         />
@@ -322,6 +390,7 @@ function Spaceship({ user }) {
                                                 className={styles.inputGameType}
                                                 type="text"
                                                 placeholder="Game Type..."
+                                                maxLength="25"
                                                 value={gameType}
                                                 onChange={handleGameTypeChange}
                                             />
@@ -331,6 +400,7 @@ function Spaceship({ user }) {
                                                 className={styles.inputGameRank}
                                                 type="text"
                                                 placeholder="Rank..."
+                                                maxLength="25"
                                                 value={gameRank}
                                                 onChange={handleGameRankChange}
                                             />
@@ -341,9 +411,9 @@ function Spaceship({ user }) {
                                     </button>
                                 </div>
                                 <div className={styles.thirdSection}>
-                                    <button className={styles.refreshButton} onClick={handleRefresh}>
+                                    {/* <button className={styles.refreshButton} onClick={handleRefresh}>
                                         <i className="fa-solid fa-arrows-rotate"></i>
-                                    </button>
+                                    </button> */}
                                     {loading ? (
                                         <div className={styles.spinnerContainer}>
                                             <div className={styles.spinner}></div>

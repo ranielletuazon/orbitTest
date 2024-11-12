@@ -14,6 +14,7 @@ function Profile({ user }) {
     const [isLoading, setIsLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
     const [modalMessage, setModalMessage] = useState(''); // State for modal message
+    const [unreadCount, setUnreadCount] = useState(0); // To notification
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -106,10 +107,34 @@ function Profile({ user }) {
         setIsModalVisible(false); // Close the modal
     };
 
+    useEffect(() => {
+        const fetchUnreadMessages = async () => {
+            try {
+                // Reference to the 'chats' collection
+                const chatsRef = doc(db, 'chats', user.uid);
+                const chatsSnapshot = await getDoc(chatsRef);
+                const chatsData = chatsSnapshot.exists() ? chatsSnapshot.data().chatsData : [];
+                
+                // Filter unread messages where messageSeen is false
+                const unreadMessages = chatsData.filter(chat => chat.messageSeen === false);
+                setUnreadCount(unreadMessages.length);
+            } catch (error) {
+                console.error('Error fetching unread messages:', error);
+            }
+        };
+    
+        if (user) {
+            fetchUnreadMessages();
+        }
+    }, [user]);
+
     return (
         <>
             <div className={styles.spaceBody}>
                 <button onClick={() => navigate('/space/messages')} className={styles.messagesButton}>
+                    {unreadCount > 0 && (
+                        <div className={styles.notificationPop}></div>
+                    )}
                     <i className="fa-solid fa-message"></i>
                 </button>
                 <div className={styles.containerPage}>

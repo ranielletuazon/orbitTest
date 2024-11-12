@@ -22,6 +22,7 @@ function Space({ user }) {
     const [modalMessage, setModalMessage] = useState(''); // To initialize modalMessage state
     const [loading, setLoading] = useState(false); // To state to track loading status for search button
     const searchRef = useRef(null); // To reference for the search box container
+    const [unreadCount, setUnreadCount] = useState(0); // To notification
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -184,10 +185,34 @@ function Space({ user }) {
         navigate('/space/profile');
     };
 
+    useEffect(() => {
+        const fetchUnreadMessages = async () => {
+            try {
+                // Reference to the 'chats' collection
+                const chatsRef = doc(db, 'chats', user.uid);
+                const chatsSnapshot = await getDoc(chatsRef);
+                const chatsData = chatsSnapshot.exists() ? chatsSnapshot.data().chatsData : [];
+                
+                // Filter unread messages where messageSeen is false
+                const unreadMessages = chatsData.filter(chat => chat.messageSeen === false);
+                setUnreadCount(unreadMessages.length);
+            } catch (error) {
+                console.error('Error fetching unread messages:', error);
+            }
+        };
+    
+        if (user) {
+            fetchUnreadMessages();
+        }
+    }, [user]);
+
     return (
         <>
             <div className={styles.spaceBody}>
                 <button onClick={() => navigate('/space/messages')} className={styles.messagesButton}>
+                    {unreadCount > 0 && (
+                        <div className={styles.notificationPop}></div>
+                    )}
                     <i className="fa-solid fa-message"></i>
                 </button>
                 <div className={styles.spacePage}> 
