@@ -26,7 +26,6 @@ function Spaceship({ user }) {
     const [unreadCount, setUnreadCount] = useState(0); // To notification
 
     useEffect(() => {
-        // If no game is selected, redirect the user to /space
         if (!selectedGame) {
             navigate('/space');
         } else {
@@ -251,7 +250,7 @@ function Spaceship({ user }) {
                     lastMessage: messageText, // Set lastMessage to the current message
                     rId: currentUserId,
                     updatedAt: Date.now(),
-                    messageSeen: false, // Set as unread initially
+                    messageSeen: true, // Set as unread initially
                 })
             });
     
@@ -300,6 +299,7 @@ function Spaceship({ user }) {
     const closeNotifcation = () => {
         setIsMessageSent(false);
         fetchUserData(selectedGame.id);
+        window.location.reload();
     }
 
     useEffect(() => {
