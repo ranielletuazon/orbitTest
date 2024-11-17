@@ -25,8 +25,43 @@
 .logoImage {
     width: 2rem;  
     height: 2rem; 
-    object-fit: cover;  
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out; /* Smooth transition for return to original state */
 }
+
+.logoContainer {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.logoContainer:hover .logoImage {
+    animation: rotateAnimation 2s linear infinite; /* Rotate continuously on hover */
+}
+
+/* Prevent scaling back on hover */
+.logoContainer:active .logoImage {
+    transform: scale(1); /* If you want a specific effect on click, apply it here */
+}
+
+/* Smooth return to the original position when hover ends */
+@keyframes rotateAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.logoContainer .logoImage {
+    transform: rotate(0deg); /* Ensure the logo starts at 0 degrees when not hovered */
+}
+
+/* When the hover ends, return smoothly to the original rotation */
+.logoContainer:hover .logoImage {
+    transform: rotate(15deg); /* Rotate by 15 degrees */
+}
+
 
 .settingsButton {
     background: none; 
@@ -105,4 +140,34 @@
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.updateProfilePopup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 10;
+}
+
+.updateProfilePopup p {
+    margin-bottom: 20px;
+}
+
+.updateProfilePopup button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.updateProfilePopup button:hover {
+    background-color: #2980b9;
 }

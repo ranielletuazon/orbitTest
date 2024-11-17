@@ -1,0 +1,300 @@
+.pageContainer{
+    background-color: #041419;
+    height: 100vh;
+    box-sizing: border-box;
+    padding-left: 6em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.contentPage{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cardGroup{
+    width: 35em;
+    height: auto;
+    padding-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: #313131;
+    border-radius: 1rem;
+    color: #d9d9d9;
+    gap: 1.5rem;
+    position: relative;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;  /* Light gray background */
+    border-top: 4px solid #3498db;  /* Blue color for the spinner */
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+.profileImage {
+    margin-top: -1.5rem;
+    width: 9em;
+    height: 9em;
+    background-color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.circleGender{
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    bottom: 0;
+    right: 1.5rem;
+    background-color: #2cc6ff;
+    border-radius: 50%;
+}
+
+.profileImageImg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid #2cc6ff;
+    object-fit: cover; /* Ensures the image fills the circle without distortion */
+}
+
+
+
+.userDetails{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    height: auto;
+    gap: 1rem;
+}
+
+.userDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.userDiv .userBio{
+    color: #8f8e8e;
+}
+
+.gameGenres{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+.genreBox{
+    background-color: #4d4c4c;
+    width: auto;
+    border-radius: 1rem;
+    padding: 0 1rem 0 1rem;
+    color: #8f8e8e;
+}
+
+.gamesPlayed{
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+}
+
+.gameContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
+
+.gameBox{
+    background-color: #4d4c4c;
+    width: auto;
+    border-radius: 1rem;
+    padding: 0 1rem 0 1rem;
+    color: #8f8e8e;
+}
+
+.messageHolder{
+    width: 90%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background-color: #2cc6ff;
+    color: white;
+    border-radius: 1rem;
+}
+
+.skipButton{
+    position: absolute;
+    background-color: #313131;
+    right: -4rem;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3rem;
+    height: 100%;
+    border-radius: 1rem;
+    cursor: pointer;
+}
+
+.skipButton:hover{
+    background-color: #292929;
+}
+.messageOverlay {
+    position: fixed; /* Make sure the overlay covers the entire screen */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dim background to focus on the modal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.messageModal {
+    width: 25em;
+    background-color: #041419;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.modalHeader {
+    color: #fff;
+    font-size: 1rem;
+    border-bottom: 1px solid #555;
+    position: relative;
+    width: 100%;
+}
+
+.modalCloseButton {
+    position: absolute;
+    background: none;
+    margin: 0;
+    padding: 0;
+    color: white;
+    border: none;
+    right: 0;
+    top: 0;
+    z-index: 10; 
+    transition: color 0.3s;
+}
+
+.modalCloseButton:hover {
+    color: #828282; /* Change color on hover */
+}
+
+.messageHandler {
+    display: flex;
+    justify-content: space-between;
+}
+
+.modalTextArea {
+    min-height: 5em;
+    font-size: .8rem;
+    position: relative;
+    background: transparent; /* Remove default background */
+    border: none; /* Remove default border */
+    width: 80%;
+    padding: 0.75rem; /* Add some padding for the content */
+    resize: none; /* Disable resize */
+    outline: none; /* Remove focus outline */
+    color: white;
+    transition: border 0.3s; /* Smooth transition */
+}
+
+.modalTextArea:focus {
+    border-color: transparent; /* Remove any border on focus */
+}
+
+
+.modalSendButton {
+    bottom: 0;
+    right: 0;
+    background: none;
+    padding: 1.25rem;
+    color: #2cc6ff;
+    transition: color 0.3s;
+}
+
+.modalSendButton:hover {
+    color: #08729f; /* Darken button on hover */
+}
+
+.messageOverlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalText{
+    display: flex;
+    height: 10em;
+    align-items: center;
+    color: white;
+}
+
+.messagesButton{
+    position: absolute;
+    z-index: 100;
+    color: white;
+    background: #2cc6ff;
+    bottom: 0;
+    right: 0;
+    margin: 2rem;
+    padding: 1rem;
+    font-size: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.messagesButton:hover {
+    transform: scale(1.1);
+    background: #1fb1e5; /* Slightly darker shade for hover */
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 5px 12px; /* Stronger shadow on hover */
+}
+
+/* Click Effect */
+.messagesButton:active {
+    transform: scale(0.95); /* Slightly reduce size on click */
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 6px; /* Softer shadow on click */
+}

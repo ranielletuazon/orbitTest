@@ -15,6 +15,8 @@ function HeaderPage({ user }) {
     const buttonRef = useRef(null);
     const navigate = useNavigate();
 
+    
+
     useEffect(() => {
         const fetchLogoImage = async () => {
             try {
@@ -98,6 +100,10 @@ function HeaderPage({ user }) {
         navigate('/space/profile');
     };
 
+    const goToGalaxy = () => {
+        navigate('/space/galaxy');
+    };
+
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
@@ -120,7 +126,7 @@ function HeaderPage({ user }) {
                     <div></div>
                 )}
             </span>
-            <span className={styles.logoContainer}>
+            <span className={styles.logoContainer} onClick={goToGalaxy}>
                 {logoImageUrl ? (
                     <img
                         src={logoImageUrl}

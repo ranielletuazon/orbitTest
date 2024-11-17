@@ -12,6 +12,7 @@ import AdminConsole from './pages/AdminConsole.jsx'; // Import the AdminConsole 
 import LoadingScreen from './pages/LoadingScreen.jsx';
 import Spaceship from './pages/Spaceship.jsx'; // Import the Spaceship component
 import Message from './pages/Message.jsx';
+import Galaxy from './pages/Galaxy.jsx';
 import { auth, db } from './firebase/firebase.jsx'; // Import db for Firestore access
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 
@@ -84,6 +85,15 @@ function App() {
           element={
             <ProtectedRoute user={user}> {/* Pass user to ProtectedRoute */}
               <Profile user={user} /> {/* Pass user to Profile */}
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/space/galaxy"
+          element={
+            <ProtectedRoute user={user}> {/* Pass user to ProtectedRoute */}
+              <Galaxy user={user} /> {/* Pass user to Profile */}
             </ProtectedRoute>
           }
         />
