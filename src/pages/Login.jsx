@@ -102,12 +102,12 @@ function Login({ user }) {
               disabled={loading} 
             />
 
-            <span 
+            {/* <span 
               className="card-title-a" 
               onClick={handleRegisterClick} 
               style={{ cursor: 'pointer', color: '#2cc6ff', textDecoration: 'none', marginTop: 5 }}>
               FORGOT YOUR PASSWORD?
-            </span>
+            </span> */}
 
             <button 
               type="submit" 

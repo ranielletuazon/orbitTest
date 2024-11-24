@@ -298,3 +298,78 @@
 .modalContent p {
     color: #333;
 }
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: #041419;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    position: relative;
+}
+
+.modalHeader {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modalBody {
+    margin-bottom: 1rem;
+}
+
+.modalInput {
+    width: 90%;
+    padding: 8px;
+    font-size: 1rem;
+    background-color: #333;
+    border-radius: 5px;
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1rem;
+}
+
+.saveButton {
+    background-color: #2cc6ff;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+}
+
+.cancelButton {
+    background-color: #757474;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+}
+
+.closeModalButton {
+    background: none;
+    position: absolute;
+    border: none;
+    top: 0;
+    right: 0;
+    font-size: 1.2rem;
+    cursor: pointer;
+}

@@ -15,6 +15,8 @@ function Profile({ user }) {
     const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
     const [modalMessage, setModalMessage] = useState(''); // State for modal message
     const [unreadCount, setUnreadCount] = useState(0); // To notification
+    const [isEditingUsername, setIsEditingUsername] = useState(false);
+    const [isEditUsernameModalVisible, setIsEditUsernameModalVisible] = useState(false);
     const navigate = useNavigate(); 
 
     useEffect(() => {
@@ -51,6 +53,25 @@ function Profile({ user }) {
     
         fetchUserData();
     }, [user]);
+
+    const handleSaveUsername = async () => {
+        if (!newUsername.trim()) {
+            showModal("Username cannot be empty.");
+            return;
+        }
+    
+        try {
+            const userDocRef = doc(db, 'users', user.uid);
+            await updateDoc(userDocRef, { username: newUsername });
+            setUserData((prev) => ({ ...prev, username: newUsername })); // Update local state
+            setIsEditingUsername(false); 
+            showModal("Username updated successfully!");
+        } catch (error) {
+            console.error("Error updating username:", error);
+            showModal("Error updating username. Please try again.");
+        }
+    };
+    
 
     const fetchDefaultProfileImage = async () => {
         try {
@@ -183,7 +204,11 @@ function Profile({ user }) {
                                                 <span style={{fontSize: '1rem', color: 'white'}}>{newUsername || 'No username set'}</span>
                                             </div>
                                             <div className={styles.editUsername}>
-                                                <button className={styles.editButton}>Edit</button>
+                                                <button 
+                                                    className={styles.editButton} 
+                                                    onClick={() => setIsEditUsernameModalVisible(true)}>
+                                                    Edit
+                                                </button>
                                             </div>
                                         </div>
                                         <div className={styles.profileDetails} style={{marginBottom: '1rem'}}>
@@ -192,7 +217,7 @@ function Profile({ user }) {
                                                 <span style={{fontSize: '1rem', color: 'white'}}>{user?.email || 'No email available'}</span> 
                                             </div>
                                             <div className={styles.editEmail}>
-                                                <button className={styles.editButton}>Edit</button>
+                                                {/* <button className={styles.editButton}>Edit</button> */}
                                             </div>
                                         </div>
                                         <div className={styles.profileDetails}>
@@ -201,7 +226,7 @@ function Profile({ user }) {
                                                 <span style={{fontSize: '1rem', color: 'white'}}>{birthdate || 'No birthdate available'}</span>
                                             </div>
                                             <div className={styles.editBirthdate}>
-                                                <button className={styles.editButton}>Edit</button>
+                                                {/* <button className={styles.editButton}>Edit</button> */}
                                             </div>
                                         </div>
                                     </div>
@@ -209,6 +234,42 @@ function Profile({ user }) {
                             )}
                         </div>
                     </div>
+                    {isEditUsernameModalVisible && (
+                        <div className={styles.modalOverlay}>
+                            <div className={styles.modalContent}>
+                                <div className={styles.modalHeader}>
+                                    Edit Username
+                                    <button 
+                                        className={styles.closeModalButton} 
+                                        onClick={() => setIsEditUsernameModalVisible(false)}>
+                                        <i className="fa-regular fa-circle-xmark"></i>
+                                    </button>
+                                </div>
+                                <div className={styles.modalBody}>
+                                    <input 
+                                        type="text" 
+                                        value={newUsername} 
+                                        onChange={(e) => setNewUsername(e.target.value)} 
+                                        placeholder="Enter new username" 
+                                        className={styles.modalInput} 
+                                    />
+                                </div>
+                                <div className={styles.modalFooter}>
+                                    <button 
+                                        className={styles.saveButton} 
+                                        onClick={handleSaveUsername}>
+                                        Save
+                                    </button>
+                                    <button 
+                                        className={styles.cancelButton} 
+                                        onClick={() => setIsEditUsernameModalVisible(false)}>
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
 
