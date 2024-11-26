@@ -230,6 +230,10 @@ function Galaxy({ user }) {
         }
     };
 
+    const handleEscButton = () => {
+        navigate('/space');
+    };
+
     useEffect(() => {
         const fetchUnreadMessages = async () => {
             try {
@@ -290,6 +294,9 @@ function Galaxy({ user }) {
             <HeaderPage user={user} />
             <div className={styles.contentPage}>
                 <div className={styles.cardGroup}>
+                    <button className={styles.escButton} onClick={handleEscButton}>
+                        <i className="fa-regular fa-circle-xmark"></i>
+                    </button>
                     <div
                         className={styles.skipButton}
                         onClick={handleSkip}

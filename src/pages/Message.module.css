@@ -25,6 +25,7 @@
 .messageBox{
     width: 20em;
     height: 100%;
+    overflow: auto;
     background-color: #1c2120;
     border-radius: 1rem;
     color: white;
@@ -40,7 +41,6 @@
 .userPlaceHolder{
     width: 100%;
     cursor: pointer;
-
 }
 
 .messageChats {
