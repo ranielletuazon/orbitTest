@@ -345,6 +345,21 @@
     animation: fadeDown .5s ease-in-out;
 }
 
+.reviewSection{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.reviewSection input{
+    display: flex;
+    width: 100%;
+    background-color: #082933;
+    border-radius: 5px;
+    padding: 1rem .5rem;
+}
+
 @keyframes fadeDown {
     0% {
         opacity: 0;              
@@ -405,4 +420,89 @@
 
 .gameButton .clip-loader {
     margin: 0;
+}
+
+.adminButton{
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    font-size: 1.5rem;
+}
+
+.reviews{
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    margin: 1rem;
+
+    width: 20em;
+    background-color: #062c30;
+    color: white;
+    border-radius: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+
+    animation: slideFromRight .5s ease-in-out;
+
+    gap: 5px;
+}
+
+@keyframes slideFromRight {
+    0% {
+        right: -20em;
+    }
+    100% {
+        right: 0;
+    }
+}
+
+
+.reviewButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    background-color: #2cc6ff;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.reviewButton:hover{
+    background-color: #08729f;
+}
+
+.closeButton{
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+    color: #555;
+
+    cursor: pointer;
+}
+
+.buttonHolder{
+    width: 100%;
+}
+
+.submitButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    width: 7em;
+    margin-top: .5rem;
+    padding: .5rem  1rem;
+    background-color: #2cc6ff;
+    color: white;
+    border-radius: 1rem;
 }

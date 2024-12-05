@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { auth, db } from '../firebase/firebase.jsx'; 
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc, collection, getDocs, increment, runTransaction } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, increment, runTransaction, setDoc } from 'firebase/firestore';
 import { ClipLoader } from 'react-spinners';
+import { Rating } from 'react-simple-star-rating'
 
 import styles from './Space.module.css'; 
 
 import HeaderPage from './HeaderPage.jsx';
+import AdminButton from './AdminButton.jsx';
 import SidebarPage from './SidebarPage.jsx';
 
 function Space({ user }) {
@@ -23,6 +25,48 @@ function Space({ user }) {
     const [loading, setLoading] = useState(false); // To state to track loading status for search button
     const searchRef = useRef(null); // To reference for the search box container
     const [unreadCount, setUnreadCount] = useState(0); // To notification
+    const [isModalVisibleReview, setIsModalVisibleReview] = useState(false);
+    const [reviewVisible, setReviewVisible] = useState(true);
+    const [isUserAdmin, setIsUserAdmin] = useState(false); 
+    const [rating, setRating] = useState(0);
+    const [reviewText, setReviewText] = useState(""); // State to store the review input
+    
+    const handleRating = (rate) => {
+        setRating(rate); // Update the rating state
+    };
+
+    useEffect(() => {
+        const fetchUserAdminStatus = async () => {
+            if (auth.currentUser) { // Ensure the user is logged in
+                try {
+                    // Reference the user's document in the Firestore 'users' collection
+                    const userDocRef = doc(db, 'users', auth.currentUser.uid);
+                    const userDocSnap = await getDoc(userDocRef);
+    
+                    if (userDocSnap.exists()) {
+                        const userData = userDocSnap.data();
+                        
+                        // Check if 'isAdmin' exists and is true
+                        if (userData.isAdmin === true) {
+                            setIsUserAdmin(true); // Set isUserAdmin to true
+                        } else {
+                            setIsUserAdmin(false); // Set isUserAdmin to false
+                        }
+                    } else {
+                        console.log('No such user document!');
+                        setIsUserAdmin(false); // Default to false if the document doesn't exist
+                    }
+                } catch (error) {
+                    console.error('Error checking admin status:', error);
+                    setIsUserAdmin(false); // Default to false in case of error
+                }
+            } else {
+                setIsUserAdmin(false); // Default to false if no user is logged in
+            }
+        };
+    
+        fetchUserAdminStatus();
+    }, []);
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -185,6 +229,37 @@ function Space({ user }) {
         navigate('/space/profile');
     };
 
+    const handleReviewClick = () => {
+        setIsModalVisibleReview(true);
+    };
+
+    const handleSubmitReview = async () => {
+        try {
+            const reviewData = {
+                username: userData.username, // Fallback to 'Anonymous' if no username exists
+                rating: rating, // Convert the rating value to stars (e.g., 100 -> 5 stars)
+                review: reviewText, // User input review
+                date: new Date().toLocaleString(), // Current timestamp
+            };
+    
+            // Save the review to Firestore in the "reviews" collection
+            await setDoc(doc(db, "reviews", auth.currentUser.uid), reviewData);
+    
+            // Mark the review as submitted in the "users" collection
+            await setDoc(
+                doc(db, "users", auth.currentUser.uid),
+                { doneReview: true },
+                { merge: true }
+            );
+    
+            setIsModalVisibleReview(false); // Close the modal
+            setReviewVisible(false);
+        } catch (error) {
+            console.error("Error submitting review:", error);
+        }
+    };
+    
+
     useEffect(() => {
         const fetchUnreadMessages = async () => {
             try {
@@ -206,9 +281,62 @@ function Space({ user }) {
         }
     }, [user]);
 
+    const toggleReview = () => {
+        setReviewVisible(!reviewVisible);
+    };
+
+    useEffect(() => {
+        if (!auth.currentUser) return; // Ensure user is logged in
+
+        const fetchReviewStatus = async () => {
+            try {
+                // Get the Firestore document for the user
+                const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+
+                if (userDoc.exists()) {
+                    const doneReview = userDoc.data()?.doneReview;
+                    // Set reviewVisible based on the field value
+                    setReviewVisible(!(doneReview === true));
+                } else {
+                    // If document doesn't exist, assume review is visible
+                    setReviewVisible(true);
+                }
+            } catch (error) {
+                console.error("Error fetching review status:", error);
+            }
+        };
+
+        fetchReviewStatus();
+    }, []);
+
+    const handSubmitReview = async () => {
+        try {
+            await setDoc(doc(db, "users", auth.currentUser.uid), { doneReview: true }, { merge: true });
+            toggleModalReview(false);
+        } catch (error) {
+            console.error("Error submitting review:", error);
+        }
+    };
+
     return (
         <>
             <div className={styles.spaceBody}>
+
+                { isUserAdmin && 
+                    (<AdminButton/>)
+                }
+
+                { reviewVisible ? (
+                    <>
+                        <div className={styles.reviews}>
+                            <div className={styles.closeButton} onClick={toggleReview}><i className="fa-regular fa-circle-xmark"></i></div>
+                            <div className={styles.reviewText}>Are you enjoying Orbit?</div>
+                            <div className={styles.reviewButton} onClick={handleReviewClick}>Leave a Review!</div>
+                        </div>
+                    </>
+                ) : null
+                }
+
                 <button onClick={() => navigate('/space/messages')} className={styles.messagesButton}>
                     {unreadCount > 0 && (
                         <div className={styles.notificationPop}></div>
@@ -299,6 +427,38 @@ function Space({ user }) {
                         </div>
                         <div className={styles.modalHeader}>Update Required</div>
                         <div className={styles.modalMessage}>{modalMessage}</div>
+                    </div>
+                </div>
+            )}
+
+            {isModalVisibleReview && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <div className={styles.modalButtons}>
+                            <button className={styles.buttonX} onClick={() => setIsModalVisibleReview(false)}> <i className="fa-regular fa-circle-xmark"></i> </button>
+                        </div>
+                        <div className={styles.modalHeader}>Leave a Review</div>
+                            {/* Star rating component */}
+                        <Rating
+                                onClick={handleRating}
+                                ratingValue={rating}
+                                size={25}
+                                fillColor="gold"
+                                emptyColor="gray"
+                                allowHalfIcon
+                                style={{marginBottom: '1rem'}}
+                        />
+                        <div className={styles.reviewSection}>
+                            <input 
+                                type="text" 
+                                placeholder="Write a review" 
+                                value={reviewText} 
+                                onChange={(e) => setReviewText(e.target.value)}
+                            />
+                            <div className={styles.buttonHolder}>
+                                <div className={styles.submitButton} onClick={handleSubmitReview}>Submit</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

@@ -1,0 +1,18 @@
+.adminButton{
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    font-size: 1.5rem;
+
+    margin: 1rem;
+
+    color: #2cc6ff;
+    transition: color 0.2s ease;
+}
+
+.adminButton:hover{
+    color: #1b3c48;
+    cursor: pointer;
+}
+
